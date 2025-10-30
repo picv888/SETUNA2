@@ -25,15 +25,10 @@
         {
             // 下面这些窗口允许显示在截图的上面
 
-            // 状态栏中QQ右键菜单
-            new FilterInfo("QQ", "Chrome_WidgetWin_1"),
-            // 状态栏中微信右键菜单
-            new FilterInfo("Weixin", "Qt51514QWindowPopupSaveBits"),
             // 系统任务切换界面
             new FilterInfo("任务切换", "MultitaskingViewFrame"),
             // AutoHotkey的GUI界面
             new FilterInfo("AutoHotkeyGUI"),
-            new FilterInfo("ThumbnailDeviceHelperWnd"),
         };
 
         bool IWindowFilter.IsFilter(WindowInfo windowInfo)
