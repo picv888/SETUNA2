@@ -133,6 +133,9 @@ namespace SETUNA.Main.Layer
 
         void CheckRefreshLayer(WindowInfo windowInfo)
         {
+#if DEBUG
+            Console.WriteLine($"Opened:{windowInfo}");
+#endif
             // 是否挂起
             if (isSuspendCount > 0)
             {
@@ -151,44 +154,36 @@ namespace SETUNA.Main.Layer
                 return;
             }
 
+            if (topMostFormData == null) return;
+            WindowInfo topMostInfo = topMostFormData.WindowInfo;
 #if DEBUG
-            Console.WriteLine($"Opened:{windowInfo}");
+            Console.WriteLine($"Top of Setuna Window: {topMostInfo}");
 #endif
+            if (topMostInfo == null) return;
 
-            var topMostInfo = topMostFormData?.WindowInfo ?? WindowInfo.Empty;
-            if (topMostInfo != WindowInfo.Empty)
+            // 当前项目的顶级窗体 与 其他Windows程序的 比较 排序值
+            if (topMostInfo.ZOrder >= windowInfo.ZOrder)
             {
-                // 当前项目的顶级窗体 与 其他Windows程序的 比较 排序值
-                if (topMostInfo.ZOrder >= windowInfo.ZOrder)
-                {
-                    return;
-                }
-
-                var hasIntersect = false;
-                foreach (var item in formDic.Values)
-                {
-                    var childInfo = item.WindowInfo;
-
-                    // 当前项目的所有打开的窗体 与 其他Windows程序 比较 相交性
-                    if (childInfo.Rect.IntersectsWith(windowInfo.Rect))
-                    {
-                        hasIntersect = true;
-                        break;
-                    }
-                }
-
-                if (!hasIntersect)
-                {
-                    return;
-                }
-
-#if DEBUG
-                Console.WriteLine($"TopMost: {topMostInfo}");
-#endif
+                return;
             }
 
-            RefreshLayer();
+            var hasIntersect = false;
+            foreach (var item in formDic.Values)
+            {
+                var childInfo = item.WindowInfo;
+                // 当前项目的所有打开的窗体 与 其他Windows程序 比较 相交性
+                if (childInfo.Rect.IntersectsWith(windowInfo.Rect))
+                {
+                    hasIntersect = true;
+                    break;
+                }
+            }
 
+            if (!hasIntersect)
+            {
+                return;
+            }
+            RefreshLayer();
         }
 
         void FormManager_Showed(Form form)

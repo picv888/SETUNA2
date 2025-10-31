@@ -28,6 +28,7 @@ namespace SETUNA.Main
             {
                 var windowInfo = GetWindowInfo(hwnd);
                 foregroundWindow = windowInfo;
+                WindowActived?.Invoke(this, foregroundWindow);
             }
 
             hwnd = WindowsAPI.GetTopMostWindow(IntPtr.Zero);
@@ -35,10 +36,8 @@ namespace SETUNA.Main
             {
                 var windowInfo = GetWindowInfo(hwnd);
                 topMostWindow = windowInfo;
+                TopMostChanged?.Invoke(this, topMostWindow);
             }
-
-            WindowActived?.Invoke(this, foregroundWindow);
-            TopMostChanged?.Invoke(this, topMostWindow);
         }
 
         public WindowInfo GetWindowInfo(IntPtr hwnd)
