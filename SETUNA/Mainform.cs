@@ -32,11 +32,9 @@ namespace SETUNA
             scrapBook.addKeyPressListener(this);
             scrapBook.addScrapAddedListener(this);
             scrapBook.addScrapRemovedListener(this);
-            optSetuna = new SetunaOption();
             dustbox = new Queue<ScrapBase>();
             scrapBook.DustBox = dustbox;
             scrapBook.DustBoxCapacity = 5;
-            keyBook = optSetuna.GetKeyItemBook();
             _imgpool = new List<ScrapSource>();
             SetSubMenu();
 
@@ -305,7 +303,7 @@ namespace SETUNA
                     base.Visible = optSetuna.Setuna.ShowMainWindow;
                 }
                 subMenu.Items.Clear();
-                foreach (var num in optSetuna.Scrap.SubMenuStyles)
+                foreach (var num in optSetuna.Scrap.subMenuStyles)
                 {
                     if (num >= 0)
                     {
@@ -533,7 +531,7 @@ namespace SETUNA
         // Token: 0x06000209 RID: 521 RVA: 0x0000B114 File Offset: 0x00009314
         public void ScrapCreated(object sender, ScrapEventArgs e)
         {
-            var cstyle = optSetuna.FindStyle(optSetuna.Scrap.CreateStyleID);
+            var cstyle = optSetuna.FindStyle(optSetuna.Scrap.createStyleID);
             if (cstyle != null)
             {
                 cstyle.Apply(ref e.scrap);
@@ -544,50 +542,25 @@ namespace SETUNA
         // Token: 0x0600020A RID: 522 RVA: 0x0000B168 File Offset: 0x00009368
         public void ScrapInactived(object sender, ScrapEventArgs e)
         {
-            if (optSetuna.Scrap.InactiveAlphaChange)
-            {
-                e.scrap.InactiveOpacity = 1.0 - optSetuna.Scrap.InactiveAlphaValue / 100.0;
-            }
-            else
-            {
-                e.scrap.InactiveOpacity = e.scrap.ActiveOpacity;
-            }
-            var inactiveLineChange = optSetuna.Scrap.InactiveLineChange;
+            
         }
 
         // Token: 0x0600020B RID: 523 RVA: 0x0000B1E0 File Offset: 0x000093E0
         public void ScrapActivated(object sender, ScrapEventArgs e)
         {
-            var inactiveAlphaChange = optSetuna.Scrap.InactiveAlphaChange;
-            var inactiveLineChange = optSetuna.Scrap.InactiveLineChange;
+            
         }
 
         // Token: 0x0600020C RID: 524 RVA: 0x0000B204 File Offset: 0x00009404
-        public void ScrapInactiveMouseOver(object sender, ScrapEventArgs e)
+        public void ScrapInactiveMouseEnter(object sender, ScrapEventArgs e)
         {
-            if (optSetuna.Scrap.MouseOverAlphaChange)
-            {
-                e.scrap.RollOverOpacity = 1.0 - optSetuna.Scrap.MouseOverAlphaValue / 100.0;
-            }
-            else
-            {
-                e.scrap.RollOverOpacity = e.scrap.ActiveOpacity;
-            }
-            var mouseOverLineChange = optSetuna.Scrap.MouseOverLineChange;
+            
         }
 
         // Token: 0x0600020D RID: 525 RVA: 0x0000B27C File Offset: 0x0000947C
         public void ScrapInactiveMouseOut(object sender, ScrapEventArgs e)
         {
-            if (optSetuna.Scrap.InactiveAlphaChange)
-            {
-                e.scrap.InactiveOpacity = 1.0 - optSetuna.Scrap.InactiveAlphaValue / 100.0;
-            }
-            else
-            {
-                e.scrap.InactiveOpacity = e.scrap.ActiveOpacity;
-            }
-            var inactiveLineChange = optSetuna.Scrap.InactiveLineChange;
+            
         }
 
         // Token: 0x0600020E RID: 526 RVA: 0x0000B2F4 File Offset: 0x000094F4

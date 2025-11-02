@@ -4,9 +4,11 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO.Ports;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using SETUNA.Main.Option;
 using SETUNA.Main.Style;
 using SETUNA.Main.StyleItems;
 
@@ -38,12 +40,12 @@ namespace SETUNA.Main
         // Token: 0x14000005 RID: 5
         // (add) Token: 0x0600003F RID: 63 RVA: 0x00003529 File Offset: 0x00001729
         // (remove) Token: 0x06000040 RID: 64 RVA: 0x00003542 File Offset: 0x00001742
-        public event ScrapBase.ScrapEventHandler ScrapInactiveEnterEvent;
+        public event ScrapBase.ScrapEventHandler ScrapInactiveMouseEnterEvent;
 
         // Token: 0x14000006 RID: 6
         // (add) Token: 0x06000041 RID: 65 RVA: 0x0000355B File Offset: 0x0000175B
         // (remove) Token: 0x06000042 RID: 66 RVA: 0x00003574 File Offset: 0x00001774
-        public event ScrapBase.ScrapEventHandler ScrapInactiveOutEvent;
+        public event ScrapBase.ScrapEventHandler ScrapInactiveMouseOutEvent;
 
         // Token: 0x14000007 RID: 7
         // (add) Token: 0x06000043 RID: 67 RVA: 0x0000358D File Offset: 0x0000178D
@@ -58,51 +60,31 @@ namespace SETUNA.Main
 
         public event ScrapBase.ScrapEventHandler ScrapStyleRemovedEvent;
 
-
-        // Token: 0x1700000C RID: 12
-        // (get) Token: 0x06000046 RID: 70 RVA: 0x000035DC File Offset: 0x000017DC
-        // (set) Token: 0x06000045 RID: 69 RVA: 0x000035BF File Offset: 0x000017BF
-        public double ActiveOpacity
-        {
-            get => _activeOpacity;
-            set
-            {
-                _activeOpacity = value;
-                if (ActiveForm == this)
-                {
-                    Opacity = _activeOpacity;
-                }
-            }
-        }
-
-        // Token: 0x1700000D RID: 13
-        // (get) Token: 0x06000048 RID: 72 RVA: 0x00003609 File Offset: 0x00001809
-        // (set) Token: 0x06000047 RID: 71 RVA: 0x000035E4 File Offset: 0x000017E4
-        public double InactiveOpacity
-        {
-            get => _inactiveOpacity;
-            set
-            {
-                _inactiveOpacity = value;
-                if (ActiveForm != this && !_isMouseEnter)
-                {
-                    Opacity = _inactiveOpacity;
-                }
-            }
-        }
-
         // Token: 0x1700000E RID: 14
         // (get) Token: 0x0600004A RID: 74 RVA: 0x00003636 File Offset: 0x00001836
         // (set) Token: 0x06000049 RID: 73 RVA: 0x00003611 File Offset: 0x00001811
-        public double RollOverOpacity
+        public double MouseEnterOpacity
         {
-            get => _rolloverOpacity;
+            get => _mouseEnterOpacity;
             set
             {
-                _rolloverOpacity = value;
-                if (ActiveForm != this && _isMouseEnter)
+                _mouseEnterOpacity = value;
+                if (_isMouseEnter)
                 {
-                    Opacity = _rolloverOpacity;
+                    TargetOpacity = _mouseEnterOpacity;
+                }
+            }
+        }
+
+        public double MouseLeaveOpacity
+        {
+            get => _mouseLeaveOpacity;
+            set
+            {
+                _mouseLeaveOpacity = value;
+                if (!_isMouseEnter)
+                {
+                    TargetOpacity = _mouseLeaveOpacity;
                 }
             }
         }
@@ -129,7 +111,7 @@ namespace SETUNA.Main
             set
             {
                 _inactiveMargin = value;
-                if (ActiveForm != this && !_isMouseEnter)
+                if (!_isMouseEnter)
                 {
                     Padding = new Padding(_inactiveMargin);
                 }
@@ -145,7 +127,7 @@ namespace SETUNA.Main
             set
             {
                 _rolloverMargin = value;
-                if (ActiveForm != this && _isMouseEnter)
+                if (_isMouseEnter)
                 {
                     Padding = new Padding(_rolloverMargin);
                 }
@@ -156,17 +138,16 @@ namespace SETUNA.Main
         public ScrapBase()
         {
             InitializeComponent();
-            base.KeyPreview = true;
+            _optSetuna = Mainform.Instance.optSetuna;
+            KeyPreview = true;
             closePrepare = false;
             _dragmode = false;
             _scale = 100;
-            _opacity = base.Opacity;
             _blTargetSet = false;
-            _ptTarget = default(Point);
+            _ptTarget = default;
             _solidframe = true;
-            _inactiveOpacity = Opacity;
-            _activeOpacity = Opacity;
-            _rolloverOpacity = Opacity;
+            Opacity = 1.0;
+            TargetOpacity = 1.0;
             DateTime = System.DateTime.Now;
             Name = DateTime.ToCustomString();
             _interpolationmode = InterpolationMode.HighQualityBicubic;
@@ -187,15 +168,15 @@ namespace SETUNA.Main
         // Token: 0x17000012 RID: 18
         // (get) Token: 0x06000056 RID: 86 RVA: 0x000039EF File Offset: 0x00001BEF
         // (set) Token: 0x06000055 RID: 85 RVA: 0x000039CC File Offset: 0x00001BCC
-        public new double Opacity
+        public double TargetOpacity
         {
-            get => _opacity;
+            get => _targetOpacity;
             set
             {
-                _opacity = value;
-                if (_opacity != base.Opacity)
+                _targetOpacity = value > 1.0? 1.0 : value < 0.0? 0.0 : value;
+                if (_targetOpacity != Opacity)
                 {
-                    timOpacity.Enabled = true;
+                    timOpacity.Start();
                 }
             }
         }
@@ -220,123 +201,20 @@ namespace SETUNA.Main
         // Token: 0x0600005B RID: 91 RVA: 0x00003A08 File Offset: 0x00001C08
         private void timOpacity_Tick(object sender, EventArgs e)
         {
-            try
+            // 计算当前与目标的差值
+            double difference = TargetOpacity - Opacity;
+            // 每次变化步长
+            double OPACITY_STEP = 0.05;
+            // 如果已经很接近目标值，直接设置并停止计时器
+            if (Math.Abs(difference) <= OPACITY_STEP)
             {
-                if (base.Opacity != _opacity)
-                {
-                    if (_err_opac)
-                    {
-                        try
-                        {
-                            _opacity = 1.0;
-                            base.Opacity = 1.0;
-                            goto IL_166;
-                        }
-                        catch
-                        {
-                            Console.WriteLine("ScrapBase timOpacity_Tick Exception2:---");
-                            goto IL_166;
-                        }
-                    }
-                    var num = base.Opacity - _opacity;
-                    if (Math.Abs(num) < 0.10000000149011612)
-                    {
-                        try
-                        {
-                            if (base.Opacity != _opacity)
-                            {
-                                base.Opacity = _opacity;
-                            }
-                            goto IL_166;
-                        }
-                        catch (Win32Exception ex)
-                        {
-                            timOpacity.Stop();
-                            _err_opac = true;
-                            Opacity = 1.0;
-                            Console.WriteLine("ScrapBase timOpacity_Tick Exception: " + ex.Message + ", Opaque True");
-                            goto IL_166;
-                        }
-                        catch (Exception ex2)
-                        {
-                            Console.WriteLine(string.Concat(new string[]
-                            {
-                                "ScrapBase timOpacity_Tick Exception: ",
-                                ex2.Message,
-                                ", ",
-                                base.Opacity.ToString(),
-                                ", ",
-                                _opacity.ToString()
-                            }));
-                            goto IL_166;
-                        }
-                    }
-                    if (num < 0.0)
-                    {
-                        base.Opacity += 0.10000000149011612;
-                    }
-                    else
-                    {
-                        base.Opacity -= 0.10000000149011612;
-                    }
-                }
-            IL_166:
-                if (_blTargetSet)
-                {
-                    var num2 = base.Top - _ptTarget.Y;
-                    int num3;
-                    if (num2 > 0)
-                    {
-                        num3 = -(Math.Abs(num2) / 3);
-                    }
-                    else
-                    {
-                        num3 = Math.Abs(num2) / 3;
-                    }
-                    if (num3 == 0)
-                    {
-                        base.Top = _ptTarget.Y;
-                    }
-                    else
-                    {
-                        base.Top += num3;
-                    }
-                    var num4 = base.Left - _ptTarget.X;
-                    int num5;
-                    if (num4 > 0)
-                    {
-                        num5 = -(Math.Abs(num4) / 2);
-                    }
-                    else
-                    {
-                        num5 = Math.Abs(num4) / 2;
-                    }
-                    if (num5 == 0)
-                    {
-                        base.Left = _ptTarget.X;
-                    }
-                    else
-                    {
-                        base.Left += num5;
-                    }
-                    if (base.Top == _ptTarget.Y && base.Left == _ptTarget.X)
-                    {
-                        _blTargetSet = false;
-                    }
-                    else
-                    {
-                        Refresh();
-                    }
-                }
-                if (base.Opacity == _opacity && !_blTargetSet)
-                {
-                    timOpacity.Enabled = false;
-                }
+                Opacity = TargetOpacity;
+                timOpacity.Stop();
+                return;
             }
-            catch (Exception ex3)
-            {
-                Console.WriteLine("ScrapBase timOpacity_Tick Exception:" + ex3.Message);
-            }
+
+            // 向目标值移动一步
+            Opacity += Math.Sign(difference) * OPACITY_STEP;
         }
 
         // Token: 0x17000014 RID: 20
@@ -358,7 +236,7 @@ namespace SETUNA.Main
                 if (_ptTarget != base.Location)
                 {
                     _blTargetSet = true;
-                    timOpacity.Enabled = true;
+                    timOpacity.Start();
                 }
             }
         }
@@ -640,18 +518,18 @@ namespace SETUNA.Main
             _dragmode = true;
             _dragpoint = pt;
             _saveopacity = Opacity;
-            base.SuspendLayout();
-            Opacity = 0.5;
-            base.ResumeLayout();
+            SuspendLayout();
+            TargetOpacity = 0.5 * _saveopacity;
+            ResumeLayout();
         }
 
         // Token: 0x06000077 RID: 119 RVA: 0x00004381 File Offset: 0x00002581
         private void DragEnd()
         {
             _dragmode = false;
-            base.SuspendLayout();
-            Opacity = _saveopacity;
-            base.ResumeLayout();
+            SuspendLayout();
+            TargetOpacity = _saveopacity;
+            ResumeLayout();
         }
 
         // Token: 0x06000078 RID: 120 RVA: 0x000043A4 File Offset: 0x000025A4
@@ -659,8 +537,8 @@ namespace SETUNA.Main
         {
             if (_dragmode)
             {
-                base.Left += pt.X - _dragpoint.X;
-                base.Top += pt.Y - _dragpoint.Y;
+                Left += pt.X - _dragpoint.X;
+                Top += pt.Y - _dragpoint.Y;
             }
         }
 
@@ -694,8 +572,8 @@ namespace SETUNA.Main
             ScrapCreateEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapCreateEvent, new ScrapBase.ScrapEventHandler(listener.ScrapCreated));
             ScrapActiveEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapActiveEvent, new ScrapBase.ScrapEventHandler(listener.ScrapActivated));
             ScrapInactiveEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapInactiveEvent, new ScrapBase.ScrapEventHandler(listener.ScrapInactived));
-            ScrapInactiveEnterEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapInactiveEnterEvent, new ScrapBase.ScrapEventHandler(listener.ScrapInactiveMouseOver));
-            ScrapInactiveOutEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapInactiveOutEvent, new ScrapBase.ScrapEventHandler(listener.ScrapInactiveMouseOut));
+            ScrapInactiveMouseEnterEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapInactiveMouseEnterEvent, new ScrapBase.ScrapEventHandler(listener.ScrapInactiveMouseEnter));
+            ScrapInactiveMouseOutEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapInactiveMouseOutEvent, new ScrapBase.ScrapEventHandler(listener.ScrapInactiveMouseOut));
         }
 
         // Token: 0x0600007D RID: 125 RVA: 0x000044F4 File Offset: 0x000026F4
@@ -714,9 +592,6 @@ namespace SETUNA.Main
             {
                 ScrapActiveEvent(sender, new ScrapEventArgs(this));
             }
-
-            ActiveForm = this;
-            Opacity = ActiveOpacity;
         }
 
         // Token: 0x0600007F RID: 127 RVA: 0x00004538 File Offset: 0x00002738
@@ -726,38 +601,30 @@ namespace SETUNA.Main
             {
                 ScrapInactiveEvent(sender, new ScrapEventArgs(this));
             }
-            if (!_isMouseEnter)
-            {
-                Opacity = InactiveOpacity;
-            }
         }
 
         // Token: 0x06000080 RID: 128 RVA: 0x00004568 File Offset: 0x00002768
         private void ScrapBase_MouseEnter(object sender, EventArgs e)
         {
             _isMouseEnter = true;
-            if (!Focused && ScrapInactiveEnterEvent != null)
+            if (!Focused && ScrapInactiveMouseEnterEvent != null)
             {
-                ScrapInactiveEnterEvent(sender, new ScrapEventArgs(this));
+                ScrapInactiveMouseEnterEvent(sender, new ScrapEventArgs(this));
             }
-            if (ActiveForm != this)
-            {
-                Opacity = RollOverOpacity;
-            }
+            double opacity = 1.0 - _optSetuna.Scrap.MouseEnterAlphaValue / 100.0;
+            TargetOpacity = _optSetuna.Scrap.mouseEnterAlphaChange? opacity : 1.0;
         }
 
         // Token: 0x06000081 RID: 129 RVA: 0x000045A7 File Offset: 0x000027A7
         private void ScrapBase_MouseLeave(object sender, EventArgs e)
         {
             _isMouseEnter = false;
-            if (!Focused && ScrapInactiveOutEvent != null)
+            if (!Focused && ScrapInactiveMouseOutEvent != null)
             {
-                ScrapInactiveOutEvent(sender, new ScrapEventArgs(this));
+                ScrapInactiveMouseOutEvent(sender, new ScrapEventArgs(this));
             }
-            if (ActiveForm != this)
-            {
-                Opacity = InactiveOpacity;
-            }
+            double opacity = 1.0 - _optSetuna.Scrap.MouseLeaveAlphaValue / 100.0;
+            TargetOpacity = _optSetuna.Scrap.mouseLeaveAlphaChange? opacity : 1.0;
         }
 
         // Token: 0x06000082 RID: 130 RVA: 0x000045E6 File Offset: 0x000027E6
@@ -1057,29 +924,24 @@ namespace SETUNA.Main
         // Token: 0x04000034 RID: 52
         private bool IsStyleApply;
 
+        private SetunaOption _optSetuna;
+
         // Token: 0x04000035 RID: 53
         private Point _styleClickPoint = Point.Empty;
 
         // Token: 0x04000036 RID: 54
         public bool Initialized;
 
-        // Token: 0x04000037 RID: 55
-        private bool _err_opac;
-
         // Token: 0x0400003F RID: 63
-        private double _opacity;
+        private double _targetOpacity;
 
         // Token: 0x04000040 RID: 64
         private bool _isMouseEnter;
 
-        // Token: 0x04000041 RID: 65
-        private double _activeOpacity;
-
-        // Token: 0x04000042 RID: 66
-        private double _inactiveOpacity;
-
         // Token: 0x04000043 RID: 67
-        private double _rolloverOpacity;
+        private double _mouseEnterOpacity;
+
+        private double _mouseLeaveOpacity;
 
         // Token: 0x04000044 RID: 68
         private int _activeMargin;

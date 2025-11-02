@@ -35,10 +35,10 @@ namespace SETUNA.Main.Option
             setunaOption.Setuna.SelectLineSolid = false;
             setunaOption.ScrapHotKeyDatas = new Keys[(int)HotKeyID.__Count__] { Keys.Control | Keys.D1, Keys.Control | Keys.D2 };
             setunaOption.ScrapHotKeyEnable = true;
-            setunaOption.Scrap.InactiveAlphaChange = true;
-            setunaOption.Scrap.InactiveAlphaValue = 10;
-            setunaOption.Scrap.MouseOverAlphaChange = true;
-            setunaOption.Scrap.MouseOverAlphaValue = 90;
+            setunaOption.Scrap.mouseLeaveAlphaChange = true;
+            setunaOption.Scrap.MouseLeaveAlphaValue = 0;
+            setunaOption.Scrap.mouseEnterAlphaChange = true;
+            setunaOption.Scrap.MouseEnterAlphaValue = 20;
 
 
             setunaOption.Setuna.TopMostEnabled = false;
@@ -521,7 +521,7 @@ namespace SETUNA.Main.Option
                 Opacity = 95
             });
             setunaOption.Styles.Add(cstyle);
-            setunaOption.Scrap.CreateStyleID = cstyle.StyleID;
+            setunaOption.Scrap.createStyleID = cstyle.StyleID;
             cstyle = new CStyle
             {
                 StyleID = num++,
@@ -534,7 +534,7 @@ namespace SETUNA.Main.Option
                 LineColor = Color.Blue.ToArgb()
             });
             setunaOption.Styles.Add(cstyle);
-            setunaOption.Scrap.WClickStyleID = cstyle.StyleID;
+            setunaOption.Scrap.wClickStyleID = cstyle.StyleID;
             cstyle = new CStyle
             {
                 StyleID = num++,
@@ -544,28 +544,28 @@ namespace SETUNA.Main.Option
             cstyle.AddStyle(newCi3);
             cstyle.AddKeyItem(Keys.T);
             setunaOption.Styles.Add(cstyle);
-            setunaOption.Scrap.SubMenuStyles.Add(styleID13);
-            setunaOption.Scrap.SubMenuStyles.Add(new CSeparatorStyle().StyleID);
-            setunaOption.Scrap.SubMenuStyles.Add(new CScrapListStyle().StyleID);
-            setunaOption.Scrap.SubMenuStyles.Add(new CDustBoxStyle().StyleID);
-            setunaOption.Scrap.SubMenuStyles.Add(new CDustEraseStyle().StyleID);
-            setunaOption.Scrap.SubMenuStyles.Add(new COptionStyle().StyleID);
-            setunaOption.Scrap.SubMenuStyles.Add(new CShowVersionStyle().StyleID);
-            setunaOption.Scrap.SubMenuStyles.Add(new CSeparatorStyle().StyleID);
-            setunaOption.Scrap.SubMenuStyles.Add(styleID);
-            setunaOption.Scrap.SubMenuStyles.Add(styleID2);
-            setunaOption.Scrap.SubMenuStyles.Add(styleID3);
-            setunaOption.Scrap.SubMenuStyles.Add(styleID4);
-            setunaOption.Scrap.SubMenuStyles.Add(new CSeparatorStyle().StyleID);
-            setunaOption.Scrap.SubMenuStyles.Add(styleID10);
-            setunaOption.Scrap.SubMenuStyles.Add(styleID11);
-            setunaOption.Scrap.SubMenuStyles.Add(styleID12);
-            setunaOption.Scrap.SubMenuStyles.Add(styleID9);
-            setunaOption.Scrap.SubMenuStyles.Add(styleID8);
-            setunaOption.Scrap.SubMenuStyles.Add(new CSeparatorStyle().StyleID);
-            setunaOption.Scrap.SubMenuStyles.Add(styleID5);
-            setunaOption.Scrap.SubMenuStyles.Add(styleID6);
-            setunaOption.Scrap.SubMenuStyles.Add(styleID7);
+            setunaOption.Scrap.subMenuStyles.Add(styleID13);
+            setunaOption.Scrap.subMenuStyles.Add(new CSeparatorStyle().StyleID);
+            setunaOption.Scrap.subMenuStyles.Add(new CScrapListStyle().StyleID);
+            setunaOption.Scrap.subMenuStyles.Add(new CDustBoxStyle().StyleID);
+            setunaOption.Scrap.subMenuStyles.Add(new CDustEraseStyle().StyleID);
+            setunaOption.Scrap.subMenuStyles.Add(new COptionStyle().StyleID);
+            setunaOption.Scrap.subMenuStyles.Add(new CShowVersionStyle().StyleID);
+            setunaOption.Scrap.subMenuStyles.Add(new CSeparatorStyle().StyleID);
+            setunaOption.Scrap.subMenuStyles.Add(styleID);
+            setunaOption.Scrap.subMenuStyles.Add(styleID2);
+            setunaOption.Scrap.subMenuStyles.Add(styleID3);
+            setunaOption.Scrap.subMenuStyles.Add(styleID4);
+            setunaOption.Scrap.subMenuStyles.Add(new CSeparatorStyle().StyleID);
+            setunaOption.Scrap.subMenuStyles.Add(styleID10);
+            setunaOption.Scrap.subMenuStyles.Add(styleID11);
+            setunaOption.Scrap.subMenuStyles.Add(styleID12);
+            setunaOption.Scrap.subMenuStyles.Add(styleID9);
+            setunaOption.Scrap.subMenuStyles.Add(styleID8);
+            setunaOption.Scrap.subMenuStyles.Add(new CSeparatorStyle().StyleID);
+            setunaOption.Scrap.subMenuStyles.Add(styleID5);
+            setunaOption.Scrap.subMenuStyles.Add(styleID6);
+            setunaOption.Scrap.subMenuStyles.Add(styleID7);
             return setunaOption;
         }
 
@@ -807,33 +807,33 @@ namespace SETUNA.Main.Option
             // Token: 0x17000063 RID: 99
             // (get) Token: 0x06000259 RID: 601 RVA: 0x0000CFF5 File Offset: 0x0000B1F5
             // (set) Token: 0x06000258 RID: 600 RVA: 0x0000CFD2 File Offset: 0x0000B1D2
-            public sbyte InactiveAlphaValue
+            public sbyte MouseLeaveAlphaValue
             {
                 get
                 {
-                    if (_InactiveAlphaValue > 100)
+                    if (_mouseLeaveAlphaValue > 99)
                     {
-                        return 100;
+                        return 99;
                     }
-                    if (_InactiveAlphaValue < 1)
+                    if (_mouseLeaveAlphaValue < 0)
                     {
-                        return 1;
+                        return 0;
                     }
-                    return _InactiveAlphaValue;
+                    return _mouseLeaveAlphaValue;
                 }
                 set
                 {
-                    if (value > 100)
+                    if (value > 99)
                     {
-                        _InactiveAlphaValue = 100;
+                        _mouseLeaveAlphaValue = 99;
                         return;
                     }
-                    if (value < 1)
+                    if (value < 0)
                     {
-                        _InactiveAlphaValue = 1;
+                        _mouseLeaveAlphaValue = 0;
                         return;
                     }
-                    _InactiveAlphaValue = value;
+                    _mouseLeaveAlphaValue = value;
                 }
             }
 
@@ -844,140 +844,136 @@ namespace SETUNA.Main.Option
             {
                 get
                 {
-                    if (_InactiveLineValue > 10)
+                    if (_mouseLeaveLineValue > 10)
                     {
                         return 10;
                     }
-                    return _InactiveLineValue;
+                    return _mouseLeaveLineValue;
                 }
                 set
                 {
                     if (value > 10)
                     {
-                        _InactiveLineValue = 10;
+                        _mouseLeaveLineValue = 10;
                         return;
                     }
-                    _InactiveLineValue = value;
+                    _mouseLeaveLineValue = value;
                 }
             }
 
             // Token: 0x17000065 RID: 101
             // (get) Token: 0x0600025D RID: 605 RVA: 0x0000D064 File Offset: 0x0000B264
             // (set) Token: 0x0600025C RID: 604 RVA: 0x0000D041 File Offset: 0x0000B241
-            public sbyte MouseOverAlphaValue
+            public sbyte MouseEnterAlphaValue
             {
                 get
                 {
-                    if (_MouseOverAlphaValue > 100)
+                    if (_mouseEnterAlphaValue > 99)
                     {
-                        return 100;
+                        return 99;
                     }
-                    if (_MouseOverAlphaValue < 1)
+                    if (_mouseEnterAlphaValue < 0)
                     {
-                        return 1;
+                        return 0;
                     }
-                    return _MouseOverAlphaValue;
+                    return _mouseEnterAlphaValue;
                 }
                 set
                 {
-                    if (value > 100)
+                    if (value > 99)
                     {
-                        _MouseOverAlphaValue = 100;
+                        _mouseEnterAlphaValue = 99;
                         return;
                     }
-                    if (value < 1)
+                    if (value < 0)
                     {
-                        _MouseOverAlphaValue = 1;
+                        _mouseEnterAlphaValue = 0;
                         return;
                     }
-                    _MouseOverAlphaValue = value;
+                    _mouseEnterAlphaValue = value;
                 }
             }
 
             // Token: 0x17000066 RID: 102
             // (get) Token: 0x0600025F RID: 607 RVA: 0x0000D09B File Offset: 0x0000B29B
             // (set) Token: 0x0600025E RID: 606 RVA: 0x0000D084 File Offset: 0x0000B284
-            public sbyte MouseOverLineValue
+            public sbyte MouseEnterLineValue
             {
                 get
                 {
-                    if (_MouseOverLineValue > 10)
-                    {
-                        return 10;
-                    }
-                    return _MouseOverLineValue;
+                    return _mouseEnterLineValue;
                 }
                 set
                 {
                     if (value > 10)
                     {
-                        _MouseOverLineValue = 10;
+                        _mouseEnterLineValue = 10;
                         return;
                     }
-                    _MouseOverLineValue = value;
+                    _mouseEnterLineValue = value;
                 }
             }
 
             // Token: 0x06000260 RID: 608 RVA: 0x0000D0B0 File Offset: 0x0000B2B0
             public ScrapOptionData()
             {
-                CreateStyleID = 0;
-                WClickStyleID = 0;
-                ImageDrag = true;
-                InactiveAlphaChange = true;
-                InactiveAlphaValue = 90;
-                InactiveLineChange = false;
+                createStyleID = 0;
+                wClickStyleID = 0;
+                imageDrag = true;
+                mouseLeaveAlphaChange = true;
+                MouseLeaveAlphaValue = 0;
+                mouseLeaveLineChange = false;
                 InactiveLineValue = 1;
-                InactiveLineColor = new RGBColor(0, 0, 0);
-                MouseOverAlphaChange = true;
-                MouseOverAlphaValue = 10;
-                MouseOverLineChange = false;
-                MouseOverLineValue = 1;
-                MouseOverLineColor = new RGBColor(0, 0, 0);
-                SubMenuStyles = new List<int>();
+                mouseLeaveLineColor = new RGBColor(0, 0, 0);
+                mouseEnterAlphaChange = true;
+                MouseEnterAlphaValue = 10;
+                mouseEnterLineChange = false;
+                MouseEnterLineValue = 1;
+                mouseEnterLineColor = new RGBColor(0, 0, 0);
+                subMenuStyles = new List<int>();
             }
 
             // Token: 0x04000101 RID: 257
-            public int CreateStyleID;
+            public int createStyleID;
 
             // Token: 0x04000102 RID: 258
-            public int WClickStyleID;
+            public int wClickStyleID;
 
             // Token: 0x04000103 RID: 259
-            public bool ImageDrag;
+            public bool imageDrag;
 
             // Token: 0x04000104 RID: 260
-            public bool InactiveAlphaChange;
+            public bool mouseLeaveAlphaChange;
 
             // Token: 0x04000105 RID: 261
-            private sbyte _InactiveAlphaValue;
+            private sbyte _mouseLeaveAlphaValue;
 
             // Token: 0x04000106 RID: 262
-            public bool InactiveLineChange;
+            public bool mouseLeaveLineChange;
 
             // Token: 0x04000107 RID: 263
-            private sbyte _InactiveLineValue;
+            private sbyte _mouseLeaveLineValue;
 
             // Token: 0x04000108 RID: 264
-            public RGBColor InactiveLineColor;
+            public RGBColor mouseLeaveLineColor;
 
             // Token: 0x04000109 RID: 265
-            public bool MouseOverAlphaChange;
+            public bool mouseEnterAlphaChange;
 
             // Token: 0x0400010A RID: 266
-            private sbyte _MouseOverAlphaValue;
+            private sbyte _mouseEnterAlphaValue;
 
             // Token: 0x0400010B RID: 267
-            public bool MouseOverLineChange;
+            public bool mouseEnterLineChange;
 
             // Token: 0x0400010C RID: 268
-            private sbyte _MouseOverLineValue;
+            private sbyte _mouseEnterLineValue;
 
             // Token: 0x0400010D RID: 269
-            public RGBColor MouseOverLineColor;
+            public RGBColor mouseEnterLineColor;
 
             // Token: 0x0400010E RID: 270
-            public List<int> SubMenuStyles;
+            public List<int> subMenuStyles;
         }
 
         // Token: 0x0200004F RID: 79

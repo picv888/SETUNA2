@@ -319,7 +319,7 @@ namespace SETUNA.Main
         // Token: 0x060001CF RID: 463 RVA: 0x00009FA4 File Offset: 0x000081A4
         public void WClickStyle(ScrapBase scrap, Point clickpoint)
         {
-            var wclickStyleID = _mainform.optSetuna.Scrap.WClickStyleID;
+            var wclickStyleID = _mainform.optSetuna.Scrap.wClickStyleID;
             if (wclickStyleID != 0)
             {
                 var cstyle = _mainform.optSetuna.FindStyle(wclickStyleID);
@@ -343,7 +343,7 @@ namespace SETUNA.Main
 
         // Token: 0x17000052 RID: 82
         // (get) Token: 0x060001D1 RID: 465 RVA: 0x00009FFB File Offset: 0x000081FB
-        public bool IsImageDrag => _mainform.optSetuna.Scrap.ImageDrag;
+        public bool IsImageDrag => _mainform.optSetuna.Scrap.imageDrag;
 
         // Token: 0x040000CA RID: 202
         private Mainform _mainform;

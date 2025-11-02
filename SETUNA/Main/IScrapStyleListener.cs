@@ -13,7 +13,7 @@
         void ScrapActivated(object sender, ScrapEventArgs e);
 
         // Token: 0x060001D5 RID: 469
-        void ScrapInactiveMouseOver(object sender, ScrapEventArgs e);
+        void ScrapInactiveMouseEnter(object sender, ScrapEventArgs e);
 
         // Token: 0x060001D6 RID: 470
         void ScrapInactiveMouseOut(object sender, ScrapEventArgs e);

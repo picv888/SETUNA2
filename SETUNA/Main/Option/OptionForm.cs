@@ -60,13 +60,13 @@ namespace SETUNA.Main.Option
                 listStyles.Items.Add(_so.Styles[i]);
             }
             listStyles.EndUpdate();
-            _createStyleId = _so.Scrap.CreateStyleID;
-            _wclickStyleId = _so.Scrap.WClickStyleID;
-            chkScrapImageDrag.Checked = _so.Scrap.ImageDrag;
-            chkInactiveAlphaChange.Checked = _so.Scrap.InactiveAlphaChange;
-            numInactiveAlpha.Value = _so.Scrap.InactiveAlphaValue;
-            chkMouseOverAlphaChange.Checked = _so.Scrap.MouseOverAlphaChange;
-            numMouseOverAlpha.Value = _so.Scrap.MouseOverAlphaValue;
+            _createStyleId = _so.Scrap.createStyleID;
+            _wclickStyleId = _so.Scrap.wClickStyleID;
+            chkScrapImageDrag.Checked = _so.Scrap.imageDrag;
+            chkInactiveAlphaChange.Checked = _so.Scrap.mouseLeaveAlphaChange;
+            numInactiveAlpha.Value = _so.Scrap.MouseLeaveAlphaValue;
+            chkMouseOverAlphaChange.Checked = _so.Scrap.mouseEnterAlphaChange;
+            numMouseOverAlpha.Value = _so.Scrap.MouseEnterAlphaValue;
             Prepare_ScrapMenu();
             RefreshStyleList_Scrap();
 
@@ -117,13 +117,13 @@ namespace SETUNA.Main.Option
             _so.Setuna.SelectAreaTransparent = (int)numSelectAreaTrans.Value;
             _so.Setuna.DustBoxEnable = chkDustBox.Checked;
             _so.Setuna.DustBoxCapacity = (ushort)numDustBox.Value;
-            _so.Scrap.CreateStyleID = _createStyleId;
-            _so.Scrap.WClickStyleID = _wclickStyleId;
-            _so.Scrap.ImageDrag = chkScrapImageDrag.Checked;
-            _so.Scrap.InactiveAlphaChange = chkInactiveAlphaChange.Checked;
-            _so.Scrap.InactiveAlphaValue = (sbyte)numInactiveAlpha.Value;
-            _so.Scrap.MouseOverAlphaChange = chkMouseOverAlphaChange.Checked;
-            _so.Scrap.MouseOverAlphaValue = (sbyte)numMouseOverAlpha.Value;
+            _so.Scrap.createStyleID = _createStyleId;
+            _so.Scrap.wClickStyleID = _wclickStyleId;
+            _so.Scrap.imageDrag = chkScrapImageDrag.Checked;
+            _so.Scrap.mouseLeaveAlphaChange = chkInactiveAlphaChange.Checked;
+            _so.Scrap.MouseLeaveAlphaValue = (sbyte)numInactiveAlpha.Value;
+            _so.Scrap.mouseEnterAlphaChange = chkMouseOverAlphaChange.Checked;
+            _so.Scrap.MouseEnterAlphaValue = (sbyte)numMouseOverAlpha.Value;
             _so.Setuna.ClickCapture7 = chkCC7.Checked;
             _so.Setuna.ClickCapture8 = chkCC8.Checked;
             _so.Setuna.ClickCapture9 = chkCC9.Checked;
@@ -143,7 +143,7 @@ namespace SETUNA.Main.Option
                 var cstyle = (CStyle)obj;
                 list.Add(cstyle.StyleID);
             }
-            _so.Scrap.SubMenuStyles = list;
+            _so.Scrap.subMenuStyles = list;
 
             _so.Setuna.TopMostEnabled = checkBox_topMost.Checked;
             Startup.AutoStartup.Set(checkBox_autoStartup.Checked);
@@ -521,7 +521,7 @@ namespace SETUNA.Main.Option
             {
                 listScrapMenuItems.Items.Add(item);
             }
-            RefreshScrapMenuList_Menu(_so.Scrap.SubMenuStyles);
+            RefreshScrapMenuList_Menu(_so.Scrap.subMenuStyles);
         }
 
         // Token: 0x060002ED RID: 749 RVA: 0x00014764 File Offset: 0x00012964

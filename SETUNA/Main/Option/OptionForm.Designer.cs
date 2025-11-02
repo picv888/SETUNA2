@@ -1015,7 +1015,7 @@
             this.chkMouseOverAlphaChange.Name = "chkMouseOverAlphaChange";
             this.chkMouseOverAlphaChange.Size = new System.Drawing.Size(351, 34);
             this.chkMouseOverAlphaChange.TabIndex = 5;
-            this.chkMouseOverAlphaChange.Text = "改变参考图的不透明度";
+            this.chkMouseOverAlphaChange.Text = "改变参考图的透明度";
             this.toolTip1.SetToolTip(this.chkMouseOverAlphaChange, "设置鼠标光标处于参考图上时参考图的透明度。\n如果响应速度很慢请关闭。");
             this.chkMouseOverAlphaChange.UseVisualStyleBackColor = true;
             // 
@@ -1055,7 +1055,7 @@
             this.chkInactiveAlphaChange.Name = "chkInactiveAlphaChange";
             this.chkInactiveAlphaChange.Size = new System.Drawing.Size(351, 34);
             this.chkInactiveAlphaChange.TabIndex = 1;
-            this.chkInactiveAlphaChange.Text = "改变参考图的不透明度";
+            this.chkInactiveAlphaChange.Text = "改变参考图的透明度";
             this.toolTip1.SetToolTip(this.chkInactiveAlphaChange, "设置鼠标光标离开参考图上后参考图的透明度。\n如果响应速度很慢请关闭。");
             this.chkInactiveAlphaChange.UseVisualStyleBackColor = true;
             // 

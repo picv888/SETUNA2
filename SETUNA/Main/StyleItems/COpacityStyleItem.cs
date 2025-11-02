@@ -26,36 +26,7 @@ namespace SETUNA.Main.StyleItems
         // Token: 0x0600036B RID: 875 RVA: 0x00015C78 File Offset: 0x00013E78
         public override void Apply(ref ScrapBase scrap, Point clickpoint)
         {
-            if (Absolute)
-            {
-                if (_opacity > 1.0)
-                {
-                    scrap.ActiveOpacity = 1.0;
-                    return;
-                }
-                if (_opacity < 0.01)
-                {
-                    scrap.ActiveOpacity = 0.01;
-                    return;
-                }
-                scrap.ActiveOpacity = _opacity;
-                return;
-            }
-            else
-            {
-                if (scrap.ActiveOpacity + _opacity > 1.0)
-                {
-                    scrap.ActiveOpacity = 1.0;
-                    return;
-                }
-                if (scrap.ActiveOpacity + _opacity < 0.01)
-                {
-                    scrap.ActiveOpacity = 0.01;
-                    return;
-                }
-                scrap.ActiveOpacity += _opacity;
-                return;
-            }
+            
         }
 
         // Token: 0x0600036C RID: 876 RVA: 0x00015D47 File Offset: 0x00013F47
