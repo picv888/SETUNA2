@@ -133,9 +133,6 @@ namespace SETUNA.Main.Layer
 
         void CheckRefreshLayer(WindowInfo windowInfo)
         {
-#if DEBUG
-            Console.WriteLine($"Opened:{windowInfo}");
-#endif
             // 是否挂起
             if (isSuspendCount > 0)
             {
@@ -156,9 +153,7 @@ namespace SETUNA.Main.Layer
 
             if (topMostFormData == null) return;
             WindowInfo topMostInfo = topMostFormData.WindowInfo;
-#if DEBUG
-            Console.WriteLine($"Top of Setuna Window: {topMostInfo}");
-#endif
+
             if (topMostInfo == null) return;
 
             // 当前项目的顶级窗体 与 其他Windows程序的 比较 排序值
@@ -171,9 +166,12 @@ namespace SETUNA.Main.Layer
             foreach (var item in formDic.Values)
             {
                 var childInfo = item.WindowInfo;
-                // 当前项目的所有打开的窗体 与 其他Windows程序 比较 相交性
-                if (childInfo.Rect.IntersectsWith(windowInfo.Rect))
+                // 当前项目的所有打开的图片窗体 与 其他Windows程序 比较 相交性
+                if (item.Form is ScrapBase && childInfo.Rect.IntersectsWith(windowInfo.Rect))
                 {
+#if DEBUG
+                    Console.WriteLine($"hasIntersect: setuna {childInfo.Rect} and other window {windowInfo.Rect}");
+#endif
                     hasIntersect = true;
                     break;
                 }
