@@ -34,14 +34,14 @@
             this.Text = "CompactScrap";
             this.TopMost = true;
             this.TransparencyKey = System.Drawing.Color.Fuchsia;
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.CompactScrap_FormClosed);
-            this.Load += new System.EventHandler(this.CompactScrap_Load);
-            this.DoubleClick += new System.EventHandler(this.CompactScrap_DoubleClick);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CompactScrap_KeyDown);
-            this.Leave += new System.EventHandler(this.CompactScrap_Leave);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.CompactScrap_MouseDown);
-            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.CompactScrap_MouseMove);
-            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.CompactScrap_MouseUp);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.OnCompactScrapClosed);
+            this.Load += new System.EventHandler(this.OnCompactScrapLoad);
+            this.DoubleClick += new System.EventHandler(this.OnCompactScrapDoubleClick);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnCompactScrapKeyDown);
+            this.Leave += new System.EventHandler(this.OnCompactScrapLeave);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.OnCompactScrapMouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnCompactScrapMouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.OnCompactScrapMouseUp);
             this.ResumeLayout(false);
 
 		}

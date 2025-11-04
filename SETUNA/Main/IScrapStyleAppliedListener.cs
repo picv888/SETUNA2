@@ -4,6 +4,6 @@
     public interface IScrapStyleAppliedListener
     {
         // Token: 0x060001D7 RID: 471
-        void ScrapStyleApplied(object sender, ScrapEventArgs e);
+        void OnScrapStyleApplied(object sender, ScrapEventArgs e);
     }
 }

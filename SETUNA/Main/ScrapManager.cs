@@ -34,7 +34,7 @@ namespace SETUNA.Main
                 while (_dustcap < _dustbox.Count)
                 {
                     var scrapBase = _dustbox.Dequeue();
-                    scrapBase.ScrapClose();
+                    scrapBase.PrepareClose();
                 }
             }
         }
@@ -75,7 +75,7 @@ namespace SETUNA.Main
                 foreach (var obj in _scraps)
                 {
                     var scrapBase = (ScrapBase)obj;
-                    scrapBase.ScrapClose();
+                    scrapBase.PrepareClose();
                 }
                 _scraps.Clear();
                 EraseDustBox();
@@ -93,7 +93,7 @@ namespace SETUNA.Main
             {
                 foreach (var scrapBase in _dustbox)
                 {
-                    scrapBase.ScrapClose();
+                    scrapBase.PrepareClose();
                 }
                 _dustbox.Clear();
             }
@@ -172,9 +172,9 @@ namespace SETUNA.Main
             newScrap.addScrapMenuEvent(_mainform);
 
             newScrap.addScrapLocationChangedEvent(Cache.CacheManager.Instance);
-            newScrap.addScrapImageChangedEvent(Cache.CacheManager.Instance);
-            newScrap.addScrapStyleAppliedEvent(Cache.CacheManager.Instance);
-            newScrap.addScrapStyleRemovedEvent(Cache.CacheManager.Instance);
+            newScrap.AddScrapImageChangedListener(Cache.CacheManager.Instance);
+            newScrap.AddScrapStyleAppliedListener(Cache.CacheManager.Instance);
+            newScrap.AddScrapStyleRemovedListener(Cache.CacheManager.Instance);
 
             newScrap.Manager = this;
             _scraps.Add(newScrap);
@@ -210,14 +210,14 @@ namespace SETUNA.Main
                 if (_dustbox.Count == _dustcap)
                 {
                     var scrapBase2 = _dustbox.Dequeue();
-                    scrapBase2.ScrapClose();
+                    scrapBase2.PrepareClose();
                 }
                 _dustbox.Enqueue(scrapBase);
                 scrapBase.Hide();
             }
             else
             {
-                scrapBase.ScrapClose();
+                scrapBase.PrepareClose();
             }
             if (scrapRemoved != null)
             {

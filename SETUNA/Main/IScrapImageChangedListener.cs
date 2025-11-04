@@ -4,6 +4,6 @@
     public interface IScrapImageChangedListener
     {
         // Token: 0x060001D7 RID: 471
-        void ScrapImageChanged(object sender, ScrapEventArgs e);
+        void OnScrapImageChanged(object sender, ScrapEventArgs e);
     }
 }

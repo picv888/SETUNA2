@@ -27,11 +27,7 @@ namespace SETUNA.Main.StyleItems
             if (!item.SoldLine)
             {
                 _pen.DashStyle = DashStyle.Dash;
-                _pen.DashPattern = new float[]
-                {
-                    4f,
-                    4f
-                };
+                _pen.DashPattern = new float[] { 4f, 4f };
             }
             else
             {
@@ -46,39 +42,33 @@ namespace SETUNA.Main.StyleItems
         }
 
         // Token: 0x06000408 RID: 1032 RVA: 0x00019F00 File Offset: 0x00018100
-        private void CompactScrap_Load(object sender, EventArgs e)
+        private void OnCompactScrapLoad(object sender, EventArgs e)
         {
             if (scrap != null)
             {
-                //if (scrap.Visible)
-                {
-                    scrap.Visible = false;
-                    scrap.StyleForm = this;
-                }
+                scrap.Visible = false;
+                scrap.StyleForm = this;
                 ConvertScrapPosToCompact();
             }
         }
 
         // Token: 0x06000409 RID: 1033 RVA: 0x00019F80 File Offset: 0x00018180
-        private void CompactScrap_FormClosed(object sender, FormClosedEventArgs e)
+        private void OnCompactScrapClosed(object sender, FormClosedEventArgs e)
         {
             if (scrap != null)
             {
-                //if (!scrap.Visible)
-                {
-                    scrap.Visible = true;
-                    scrap.StyleForm = null;
-                    scrap.RemoveStyle(typeof(CCompactStyleItem));
-                }
+                scrap.Visible = true;
+                scrap.StyleForm = null;
+                scrap.RemoveStyle(typeof(CCompactStyleItem));
                 ConvertCompactPosToScrap();
             }
         }
 
         // Token: 0x0600040A RID: 1034 RVA: 0x00019FFE File Offset: 0x000181FE
-        private void CompactScrap_DoubleClick(object sender, EventArgs e)
+        private void OnCompactScrapDoubleClick(object sender, EventArgs e)
         {
             _thumbnail.Dispose();
-            base.Close();
+            Close();
         }
 
         // Token: 0x0600040B RID: 1035 RVA: 0x0001A014 File Offset: 0x00018214
@@ -87,9 +77,9 @@ namespace SETUNA.Main.StyleItems
             e.Graphics.Clear(Color.Green);
             TransparencyKey = Color.Green;
 
-            e.Graphics.DrawImageUnscaled(_thumbnail, new Point(-_clickpoint.X + base.Width / 2, -_clickpoint.Y + base.Height / 2));
-            e.Graphics.DrawRectangle(Pens.White, new Rectangle(0, 0, base.Width - 1, base.Height - 1));
-            e.Graphics.DrawRectangle(_pen, new Rectangle(0, 0, base.Width - 1, base.Height - 1));
+            e.Graphics.DrawImageUnscaled(_thumbnail, new Point(-_clickpoint.X + Width / 2, -_clickpoint.Y + Height / 2));
+            e.Graphics.DrawRectangle(Pens.White, new Rectangle(0, 0, Width - 1, Height - 1));
+            e.Graphics.DrawRectangle(_pen, new Rectangle(0, 0, Width - 1, Height - 1));
         }
 
         // Token: 0x0600040C RID: 1036 RVA: 0x0001A0B0 File Offset: 0x000182B0
@@ -122,50 +112,50 @@ namespace SETUNA.Main.StyleItems
         }
 
         // Token: 0x0600040F RID: 1039 RVA: 0x0001A121 File Offset: 0x00018321
-        private void CompactScrap_MouseDown(object sender, MouseEventArgs e)
+        private void OnCompactScrapMouseDown(object sender, MouseEventArgs e)
         {
             DragStart(e.Location);
         }
 
         // Token: 0x06000410 RID: 1040 RVA: 0x0001A12F File Offset: 0x0001832F
-        private void CompactScrap_MouseUp(object sender, MouseEventArgs e)
+        private void OnCompactScrapMouseUp(object sender, MouseEventArgs e)
         {
             DragEnd();
         }
 
         // Token: 0x06000411 RID: 1041 RVA: 0x0001A137 File Offset: 0x00018337
-        private void CompactScrap_MouseMove(object sender, MouseEventArgs e)
+        private void OnCompactScrapMouseMove(object sender, MouseEventArgs e)
         {
             DragMove(e.Location);
         }
 
         // Token: 0x06000412 RID: 1042 RVA: 0x0001A145 File Offset: 0x00018345
-        private void CompactScrap_Leave(object sender, EventArgs e)
+        private void OnCompactScrapLeave(object sender, EventArgs e)
         {
             DragEnd();
         }
 
         // Token: 0x06000413 RID: 1043 RVA: 0x0001A14D File Offset: 0x0001834D
-        private void CompactScrap_KeyDown(object sender, KeyEventArgs e)
+        private void OnCompactScrapKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Escape || e.KeyCode == Keys.Return || e.KeyCode == Keys.Return)
+            if (e.KeyCode == Keys.Escape || e.KeyCode == Keys.Return)
             {
-                base.Close();
+                Close();
             }
         }
 
         private void ConvertScrapPosToCompact()
         {
-            var left = scrap.Left + _clickpoint.X - base.Width / 2;
-            var top = scrap.Top + _clickpoint.Y - base.Height / 2;
-            base.Left = left;
-            base.Top = top;
+            var left = scrap.Left + _clickpoint.X - Width / 2;
+            var top = scrap.Top + _clickpoint.Y - Height / 2;
+            Left = left;
+            Top = top;
         }
 
         private void ConvertCompactPosToScrap()
         {
-            var left = base.Left + base.Width / 2 - _clickpoint.X;
-            var top = base.Top + base.Height / 2 - _clickpoint.Y;
+            var left = Left + Width / 2 - _clickpoint.X;
+            var top = Top + Height / 2 - _clickpoint.Y;
             scrap.Left = left;
             scrap.Top = top;
         }

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.IO.Ports;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -14,55 +12,57 @@ using SETUNA.Main.StyleItems;
 
 namespace SETUNA.Main
 {
-    // Token: 0x02000008 RID: 8
     public sealed partial class ScrapBase : BaseForm
     {
-        // Token: 0x14000001 RID: 1
-        // (add) Token: 0x06000037 RID: 55 RVA: 0x00003461 File Offset: 0x00001661
-        // (remove) Token: 0x06000038 RID: 56 RVA: 0x0000347A File Offset: 0x0000167A
-        public event ScrapBase.ScrapEventHandler ScrapCloseEvent;
+        private const int WS_EX_LAYERED = 524288;
+        private const int GWL_EXSTYLE = -20;
+        public ScrapManager _scrapManager;
+        private Image imgView;
+        private bool closePrepare;
+        private string _name;
+        private DateTime _datetime;
+        private int _scale;
+        private bool _dragmode;
+        private Point _dragpoint;
+        private double _saveopacity;
+        private bool _blTargetSet;
+        private Pen _pen;
+        private Point _ptTarget;
+        private Timer StyleApplyTimer;
+        private int StyleAppliIndex;
+        private int _styleID;
+        private List<CStyleItem> _styleItems;
+        private bool IsStyleApply;
+        private SetunaOption _optSetuna;
+        private Point _styleClickPoint = Point.Empty;
+        public bool Initialized;
+        private double _targetOpacity;
+        private bool _isMouseEnter;
+        private double _mouseEnterOpacity;
+        private double _mouseLeaveOpacity;
+        private int _activeMargin;
+        private int _inactiveMargin;
+        private int _rolloverMargin;
+        private InterpolationMode _interpolationmode;
+        private Cache.CacheItem _cacheItem;
+        private Action _applyFinished;
+        private bool _solidFrame;
+        public delegate void ScrapEventHandler(object sender, ScrapEventArgs e);
+        public delegate void ScrapSubMenuHandler(object sender, ScrapMenuArgs e);
+        private bool _visible = true;
 
-        // Token: 0x14000002 RID: 2
-        // (add) Token: 0x06000039 RID: 57 RVA: 0x00003493 File Offset: 0x00001693
-        // (remove) Token: 0x0600003A RID: 58 RVA: 0x000034AC File Offset: 0x000016AC
-        public event ScrapBase.ScrapEventHandler ScrapCreateEvent;
-
-        // Token: 0x14000003 RID: 3
-        // (add) Token: 0x0600003B RID: 59 RVA: 0x000034C5 File Offset: 0x000016C5
-        // (remove) Token: 0x0600003C RID: 60 RVA: 0x000034DE File Offset: 0x000016DE
-        public event ScrapBase.ScrapEventHandler ScrapActiveEvent;
-
-        // Token: 0x14000004 RID: 4
-        // (add) Token: 0x0600003D RID: 61 RVA: 0x000034F7 File Offset: 0x000016F7
-        // (remove) Token: 0x0600003E RID: 62 RVA: 0x00003510 File Offset: 0x00001710
-        public event ScrapBase.ScrapEventHandler ScrapInactiveEvent;
-
-        // Token: 0x14000005 RID: 5
-        // (add) Token: 0x0600003F RID: 63 RVA: 0x00003529 File Offset: 0x00001729
-        // (remove) Token: 0x06000040 RID: 64 RVA: 0x00003542 File Offset: 0x00001742
-        public event ScrapBase.ScrapEventHandler ScrapInactiveMouseEnterEvent;
-
-        // Token: 0x14000006 RID: 6
-        // (add) Token: 0x06000041 RID: 65 RVA: 0x0000355B File Offset: 0x0000175B
-        // (remove) Token: 0x06000042 RID: 66 RVA: 0x00003574 File Offset: 0x00001774
-        public event ScrapBase.ScrapEventHandler ScrapInactiveMouseOutEvent;
-
-        // Token: 0x14000007 RID: 7
-        // (add) Token: 0x06000043 RID: 67 RVA: 0x0000358D File Offset: 0x0000178D
-        // (remove) Token: 0x06000044 RID: 68 RVA: 0x000035A6 File Offset: 0x000017A6
+        public event ScrapBase.ScrapEventHandler ScrapClose;
+        public event ScrapBase.ScrapEventHandler ScrapCreate;
+        public event ScrapBase.ScrapEventHandler ScrapActive;
+        public event ScrapBase.ScrapEventHandler ScrapInactive;
+        public event ScrapBase.ScrapEventHandler ScrapInactiveMouseEnter;
+        public event ScrapBase.ScrapEventHandler ScrapInactiveMouseLeave;
         public event ScrapBase.ScrapSubMenuHandler ScrapSubMenuOpening;
+        public event ScrapBase.ScrapEventHandler ScrapLocationChanged;
+        public event ScrapBase.ScrapEventHandler ScrapImageChanged;
+        public event ScrapBase.ScrapEventHandler ScrapStyleApplied;
+        public event ScrapBase.ScrapEventHandler ScrapStyleRemoved;
 
-        public event ScrapBase.ScrapEventHandler ScrapLocationChangedEvent;
-
-        public event ScrapBase.ScrapEventHandler ScrapImageChangedEvent;
-
-        public event ScrapBase.ScrapEventHandler ScrapStyleAppliedEvent;
-
-        public event ScrapBase.ScrapEventHandler ScrapStyleRemovedEvent;
-
-        // Token: 0x1700000E RID: 14
-        // (get) Token: 0x0600004A RID: 74 RVA: 0x00003636 File Offset: 0x00001836
-        // (set) Token: 0x06000049 RID: 73 RVA: 0x00003611 File Offset: 0x00001811
         public double MouseEnterOpacity
         {
             get => _mouseEnterOpacity;
@@ -89,9 +89,6 @@ namespace SETUNA.Main
             }
         }
 
-        // Token: 0x1700000F RID: 15
-        // (get) Token: 0x0600004C RID: 76 RVA: 0x00003658 File Offset: 0x00001858
-        // (set) Token: 0x0600004B RID: 75 RVA: 0x0000363E File Offset: 0x0000183E
         public int ActiveMargin
         {
             get => _activeMargin;
@@ -102,9 +99,6 @@ namespace SETUNA.Main
             }
         }
 
-        // Token: 0x17000010 RID: 16
-        // (get) Token: 0x0600004E RID: 78 RVA: 0x0000368A File Offset: 0x0000188A
-        // (set) Token: 0x0600004D RID: 77 RVA: 0x00003660 File Offset: 0x00001860
         public int InactiveMargin
         {
             get => _inactiveMargin;
@@ -118,9 +112,6 @@ namespace SETUNA.Main
             }
         }
 
-        // Token: 0x17000011 RID: 17
-        // (get) Token: 0x06000050 RID: 80 RVA: 0x000036BC File Offset: 0x000018BC
-        // (set) Token: 0x0600004F RID: 79 RVA: 0x00003692 File Offset: 0x00001892
         public int RollOverMargin
         {
             get => _rolloverMargin;
@@ -134,72 +125,57 @@ namespace SETUNA.Main
             }
         }
 
-        // Token: 0x06000051 RID: 81 RVA: 0x000036C4 File Offset: 0x000018C4
+        public bool SolidFrame
+        {
+            get => _solidFrame;
+            set => _solidFrame = value;
+        }
+
         public ScrapBase()
         {
             InitializeComponent();
             _optSetuna = Mainform.Instance.optSetuna;
             KeyPreview = true;
+            SolidFrame = true;
             closePrepare = false;
             _dragmode = false;
             _scale = 100;
             _blTargetSet = false;
             _ptTarget = default;
-            _solidframe = true;
             Opacity = 1.0;
             TargetOpacity = 1.0;
             DateTime = System.DateTime.Now;
             Name = DateTime.ToCustomString();
             _interpolationmode = InterpolationMode.HighQualityBicubic;
+            _pen = new Pen(Color.Blue);
+            _pen.DashStyle = DashStyle.Dash;
+            _pen.DashPattern = new float[] { 4f, 4f };
         }
 
-        // Token: 0x06000052 RID: 82 RVA: 0x000037B8 File Offset: 0x000019B8
         ~ScrapBase()
         {
             ImageAllDispose();
         }
 
-        // Token: 0x06000054 RID: 84 RVA: 0x000039BE File Offset: 0x00001BBE
         private void ImageAllDispose()
         {
             ImageDispose(ref imgView);
         }
 
-        // Token: 0x17000012 RID: 18
-        // (get) Token: 0x06000056 RID: 86 RVA: 0x000039EF File Offset: 0x00001BEF
-        // (set) Token: 0x06000055 RID: 85 RVA: 0x000039CC File Offset: 0x00001BCC
         public double TargetOpacity
         {
             get => _targetOpacity;
             set
             {
-                _targetOpacity = value > 1.0? 1.0 : value < 0.0? 0.0 : value;
+                _targetOpacity = value > 1.0 ? 1.0 : value < 0.0 ? 0.0 : value;
                 if (_targetOpacity != Opacity)
                 {
-                    timOpacity.Start();
+                    OpacityTimer.Start();
                 }
             }
         }
 
-        // Token: 0x17000013 RID: 19
-        // (get) Token: 0x06000058 RID: 88 RVA: 0x00003A00 File Offset: 0x00001C00
-        // (set) Token: 0x06000057 RID: 87 RVA: 0x000039F7 File Offset: 0x00001BF7
-        public bool SolidFrame
-        {
-            get => _solidframe;
-            set => _solidframe = value;
-        }
-
-        // Token: 0x06000059 RID: 89
-        [DllImport("user32.dll")]
-        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-
-        // Token: 0x0600005A RID: 90
-        [DllImport("user32.dll")]
-        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-
-        // Token: 0x0600005B RID: 91 RVA: 0x00003A08 File Offset: 0x00001C08
-        private void timOpacity_Tick(object sender, EventArgs e)
+        private void OnOpacityTimerTick(object sender, EventArgs e)
         {
             // 计算当前与目标的差值
             double difference = TargetOpacity - Opacity;
@@ -209,7 +185,7 @@ namespace SETUNA.Main
             if (Math.Abs(difference) <= OPACITY_STEP)
             {
                 Opacity = TargetOpacity;
-                timOpacity.Stop();
+                OpacityTimer.Stop();
                 return;
             }
 
@@ -217,9 +193,6 @@ namespace SETUNA.Main
             Opacity += Math.Sign(difference) * OPACITY_STEP;
         }
 
-        // Token: 0x17000014 RID: 20
-        // (get) Token: 0x0600005D RID: 93 RVA: 0x00003D3B File Offset: 0x00001F3B
-        // (set) Token: 0x0600005C RID: 92 RVA: 0x00003D0C File Offset: 0x00001F0C
         public Point TargetLocation
         {
             get
@@ -236,33 +209,11 @@ namespace SETUNA.Main
                 if (_ptTarget != base.Location)
                 {
                     _blTargetSet = true;
-                    timOpacity.Start();
+                    OpacityTimer.Start();
                 }
             }
         }
 
-        // Token: 0x0600005E RID: 94 RVA: 0x00003D52 File Offset: 0x00001F52
-        private void ImageDispose(ref Image img)
-        {
-            if (img != null)
-            {
-                img.Dispose();
-                img = null;
-            }
-        }
-
-        // Token: 0x0600005F RID: 95 RVA: 0x00003D62 File Offset: 0x00001F62
-        private void ScrapBase_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == Convert.ToChar(Keys.Escape))
-            {
-                base.Close();
-            }
-        }
-
-        // Token: 0x17000015 RID: 21
-        // (get) Token: 0x06000061 RID: 97 RVA: 0x00003DBB File Offset: 0x00001FBB
-        // (set) Token: 0x06000060 RID: 96 RVA: 0x00003D7E File Offset: 0x00001F7E
         public Image Image
         {
             get => imgView;
@@ -277,14 +228,28 @@ namespace SETUNA.Main
                 Scale = Scale;
                 Refresh();
 
-                if (ScrapImageChangedEvent != null)
+                if (ScrapImageChanged != null)
                 {
-                    ScrapImageChangedEvent(this, new ScrapEventArgs(this));
+                    ScrapImageChanged(this, new ScrapEventArgs(this));
                 }
             }
         }
 
-        // Token: 0x06000062 RID: 98 RVA: 0x00003DC4 File Offset: 0x00001FC4
+        [DllImport("user32.dll")]
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        [DllImport("user32.dll")]
+        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+        private void ImageDispose(ref Image img)
+        {
+            if (img != null)
+            {
+                img.Dispose();
+                img = null;
+            }
+        }
+
         public Image GetViewImage()
         {
             var bitmap = new Bitmap(base.Width, base.Height, PixelFormat.Format24bppRgb);
@@ -292,7 +257,6 @@ namespace SETUNA.Main
             return bitmap;
         }
 
-        // Token: 0x06000063 RID: 99 RVA: 0x00003E04 File Offset: 0x00002004
         public Image GetThumbnail()
         {
             var bitmap = new Bitmap(230, 150, PixelFormat.Format24bppRgb);
@@ -323,57 +287,31 @@ namespace SETUNA.Main
             return bitmap;
         }
 
-        // Token: 0x06000064 RID: 100 RVA: 0x00003F58 File Offset: 0x00002158
-        public void ScrapResize()
-        {
-            base.Width = imgView.Width + (Padding.Left + Padding.Right);
-            base.Height = imgView.Height + (Padding.Top + Padding.Bottom);
-        }
-
-        // Token: 0x06000065 RID: 101 RVA: 0x00003FC4 File Offset: 0x000021C4
         protected override void OnPaint(PaintEventArgs e)
         {
-            //var width = (int)(imgView.Width * (_scale / 100f));
-            //var height = (int)(imgView.Height * (_scale / 100f));
-            var all = Padding.All;
+            var margin = Padding.All;
             e.Graphics.InterpolationMode = _interpolationmode;
-            //e.Graphics.DrawImage(imgView, all, all, width, height);
 
             if (Mainform.Instance.optSetuna.Setuna.BackgroundTransparentEnabled)
             {
                 e.Graphics.Clear(Color.Green);
                 TransparencyKey = Color.Green;
-
-                e.Graphics.DrawImage(imgView, all, all, Width - all * 2, Height - all * 2);
+                e.Graphics.DrawImage(imgView, margin, margin, imgView.Width, imgView.Height);
             }
             else
             {
                 e.Graphics.Clear(Color.White);
-
-                e.Graphics.DrawImage(imgView, all, all, Width, Height);
+                e.Graphics.DrawImage(imgView, margin, margin, imgView.Width, imgView.Height);
             }
-
-            if (!_solidframe)
-            {
-                var pen = new Pen(Color.FromArgb(243, 243, 243));
-                e.Graphics.DrawLine(pen, 0, 0, Width, 0);
-                e.Graphics.DrawLine(pen, 0, 0, 0, Height);
-                pen.Dispose();
-            }
+            e.Graphics.DrawRectangle(_pen, new Rectangle(0, 0, Width - 1, Height - 1));
         }
 
-        // Token: 0x17000016 RID: 22
-        // (get) Token: 0x06000067 RID: 103 RVA: 0x0000409C File Offset: 0x0000229C
-        // (set) Token: 0x06000066 RID: 102 RVA: 0x00004093 File Offset: 0x00002293
         public InterpolationMode InterpolationMode
         {
             get => _interpolationmode;
             set => _interpolationmode = value;
         }
 
-        // Token: 0x17000017 RID: 23
-        // (get) Token: 0x06000069 RID: 105 RVA: 0x0000416A File Offset: 0x0000236A
-        // (set) Token: 0x06000068 RID: 104 RVA: 0x000040A4 File Offset: 0x000022A4
         public new Padding Padding
         {
             get => base.Padding;
@@ -390,7 +328,6 @@ namespace SETUNA.Main
             }
         }
 
-        // Token: 0x0600006A RID: 106 RVA: 0x00004174 File Offset: 0x00002374
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             var styleForm = StyleForm;
@@ -412,7 +349,14 @@ namespace SETUNA.Main
             base.OnFormClosing(e);
         }
 
-        // Token: 0x0600006B RID: 107 RVA: 0x000041C9 File Offset: 0x000023C9
+        private void OnScrapKeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == Convert.ToChar(Keys.Escape))
+            {
+                base.Close();
+            }
+        }
+
         protected override void OnClosed(EventArgs e)
         {
             ImageAllDispose();
@@ -421,43 +365,35 @@ namespace SETUNA.Main
             base.OnClosed(e);
         }
 
-        // Token: 0x0600006C RID: 108 RVA: 0x000041D8 File Offset: 0x000023D8
         public void OnScrapClose(ScrapEventArgs e)
         {
-            if (ScrapCloseEvent != null)
+            if (ScrapClose != null)
             {
-                ScrapCloseEvent(this, e);
+                ScrapClose(this, e);
             }
         }
 
-        // Token: 0x0600006D RID: 109 RVA: 0x000041EF File Offset: 0x000023EF
-        public void ScrapClose()
+        public void PrepareClose()
         {
             closePrepare = true;
             base.Close();
             GC.Collect();
         }
 
-        // Token: 0x17000018 RID: 24
-        // (get) Token: 0x0600006F RID: 111 RVA: 0x0000425E File Offset: 0x0000245E
-        // (set) Token: 0x0600006E RID: 110 RVA: 0x00004204 File Offset: 0x00002404
         public ScrapManager Manager
         {
             get => _scrapManager;
             set
             {
                 _scrapManager = value;
-                if (ScrapCloseEvent == null)
+                if (ScrapClose == null)
                 {
-                    ScrapCloseEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapCloseEvent, new ScrapBase.ScrapEventHandler(_scrapManager.ScrapClose));
+                    ScrapClose = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapClose, new ScrapBase.ScrapEventHandler(_scrapManager.ScrapClose));
                     KeyDown += _scrapManager.OnScrapKeyDown;
                 }
             }
         }
 
-        // Token: 0x17000019 RID: 25
-        // (get) Token: 0x06000071 RID: 113 RVA: 0x0000427B File Offset: 0x0000247B
-        // (set) Token: 0x06000070 RID: 112 RVA: 0x00004266 File Offset: 0x00002466
         public new string Name
         {
             get => _name;
@@ -468,18 +404,12 @@ namespace SETUNA.Main
             }
         }
 
-        // Token: 0x1700001A RID: 26
-        // (get) Token: 0x06000073 RID: 115 RVA: 0x0000428C File Offset: 0x0000248C
-        // (set) Token: 0x06000072 RID: 114 RVA: 0x00004283 File Offset: 0x00002483
         public DateTime DateTime
         {
             get => _datetime;
             set => _datetime = value;
         }
 
-        // Token: 0x1700001B RID: 27
-        // (get) Token: 0x06000075 RID: 117 RVA: 0x00004342 File Offset: 0x00002542
-        // (set) Token: 0x06000074 RID: 116 RVA: 0x00004294 File Offset: 0x00002494
         public new int Scale
         {
             get => _scale;
@@ -512,7 +442,6 @@ namespace SETUNA.Main
 
         public Form StyleForm { set; get; }
 
-        // Token: 0x06000076 RID: 118 RVA: 0x0000434A File Offset: 0x0000254A
         private void DragStart(Point pt)
         {
             _dragmode = true;
@@ -523,7 +452,6 @@ namespace SETUNA.Main
             ResumeLayout();
         }
 
-        // Token: 0x06000077 RID: 119 RVA: 0x00004381 File Offset: 0x00002581
         private void DragEnd()
         {
             _dragmode = false;
@@ -532,7 +460,6 @@ namespace SETUNA.Main
             ResumeLayout();
         }
 
-        // Token: 0x06000078 RID: 120 RVA: 0x000043A4 File Offset: 0x000025A4
         private void DragMove(Point pt)
         {
             if (_dragmode)
@@ -542,8 +469,7 @@ namespace SETUNA.Main
             }
         }
 
-        // Token: 0x06000079 RID: 121 RVA: 0x000043F9 File Offset: 0x000025F9
-        private void pnlImg_MouseDown(object sender, MouseEventArgs e)
+        private void OnScrapMouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -551,14 +477,12 @@ namespace SETUNA.Main
             }
         }
 
-        // Token: 0x0600007A RID: 122 RVA: 0x00004414 File Offset: 0x00002614
-        private void pnlImg_MouseMove(object sender, MouseEventArgs e)
+        private void OnScrapMouseMove(object sender, MouseEventArgs e)
         {
             DragMove(e.Location);
         }
 
-        // Token: 0x0600007B RID: 123 RVA: 0x00004422 File Offset: 0x00002622
-        private void pnlImg_MouseUp(object sender, MouseEventArgs e)
+        private void OnScrapMouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
             {
@@ -566,68 +490,61 @@ namespace SETUNA.Main
             }
         }
 
-        // Token: 0x0600007C RID: 124 RVA: 0x00004438 File Offset: 0x00002638
         public void addScrapStyleEvent(IScrapStyleListener listener)
         {
-            ScrapCreateEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapCreateEvent, new ScrapBase.ScrapEventHandler(listener.ScrapCreated));
-            ScrapActiveEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapActiveEvent, new ScrapBase.ScrapEventHandler(listener.ScrapActivated));
-            ScrapInactiveEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapInactiveEvent, new ScrapBase.ScrapEventHandler(listener.ScrapInactived));
-            ScrapInactiveMouseEnterEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapInactiveMouseEnterEvent, new ScrapBase.ScrapEventHandler(listener.ScrapInactiveMouseEnter));
-            ScrapInactiveMouseOutEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapInactiveMouseOutEvent, new ScrapBase.ScrapEventHandler(listener.ScrapInactiveMouseOut));
+            ScrapCreate = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapCreate, new ScrapBase.ScrapEventHandler(listener.ScrapCreated));
+            ScrapActive = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapActive, new ScrapBase.ScrapEventHandler(listener.ScrapActivated));
+            ScrapInactive = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapInactive, new ScrapBase.ScrapEventHandler(listener.ScrapInactived));
+            ScrapInactiveMouseEnter = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapInactiveMouseEnter, new ScrapBase.ScrapEventHandler(listener.ScrapInactiveMouseEnter));
+            ScrapInactiveMouseLeave = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapInactiveMouseLeave, new ScrapBase.ScrapEventHandler(listener.ScrapInactiveMouseOut));
         }
 
-        // Token: 0x0600007D RID: 125 RVA: 0x000044F4 File Offset: 0x000026F4
         public void OnScrapCreated()
         {
-            if (ScrapCreateEvent != null)
+            if (ScrapCreate != null)
             {
-                ScrapCreateEvent(this, new ScrapEventArgs(this));
+                ScrapCreate(this, new ScrapEventArgs(this));
             }
         }
 
-        // Token: 0x0600007E RID: 126 RVA: 0x00004510 File Offset: 0x00002710
-        private void ScrapBase_Activated(object sender, EventArgs e)
+        private void OnScrapActivated(object sender, EventArgs e)
         {
-            if (ScrapActiveEvent != null)
+            if (ScrapActive != null)
             {
-                ScrapActiveEvent(sender, new ScrapEventArgs(this));
+                ScrapActive(sender, new ScrapEventArgs(this));
             }
         }
 
-        // Token: 0x0600007F RID: 127 RVA: 0x00004538 File Offset: 0x00002738
-        private void ScrapBase_Deactivate(object sender, EventArgs e)
+        private void OnScrapDeactivate(object sender, EventArgs e)
         {
-            if (ScrapInactiveEvent != null)
+            if (ScrapInactive != null)
             {
-                ScrapInactiveEvent(sender, new ScrapEventArgs(this));
+                ScrapInactive(sender, new ScrapEventArgs(this));
             }
         }
 
-        // Token: 0x06000080 RID: 128 RVA: 0x00004568 File Offset: 0x00002768
-        private void ScrapBase_MouseEnter(object sender, EventArgs e)
+        private void OnScrapMouseEnter(object sender, EventArgs e)
         {
             _isMouseEnter = true;
-            if (!Focused && ScrapInactiveMouseEnterEvent != null)
+            if (!Focused && ScrapInactiveMouseEnter != null)
             {
-                ScrapInactiveMouseEnterEvent(sender, new ScrapEventArgs(this));
+                ScrapInactiveMouseEnter(sender, new ScrapEventArgs(this));
             }
             double opacity = 1.0 - _optSetuna.Scrap.MouseEnterAlphaValue / 100.0;
-            TargetOpacity = _optSetuna.Scrap.mouseEnterAlphaChange? opacity : 1.0;
+            TargetOpacity = _optSetuna.Scrap.mouseEnterAlphaChange ? opacity : 1.0;
         }
 
-        // Token: 0x06000081 RID: 129 RVA: 0x000045A7 File Offset: 0x000027A7
-        private void ScrapBase_MouseLeave(object sender, EventArgs e)
+        private void OnScrapMouseLeave(object sender, EventArgs e)
         {
             _isMouseEnter = false;
-            if (!Focused && ScrapInactiveMouseOutEvent != null)
+            if (!Focused && ScrapInactiveMouseLeave != null)
             {
-                ScrapInactiveMouseOutEvent(sender, new ScrapEventArgs(this));
+                ScrapInactiveMouseLeave(sender, new ScrapEventArgs(this));
             }
             double opacity = 1.0 - _optSetuna.Scrap.MouseLeaveAlphaValue / 100.0;
-            TargetOpacity = _optSetuna.Scrap.mouseLeaveAlphaChange? opacity : 1.0;
+            TargetOpacity = _optSetuna.Scrap.mouseLeaveAlphaChange ? opacity : 1.0;
         }
 
-        // Token: 0x06000082 RID: 130 RVA: 0x000045E6 File Offset: 0x000027E6
         public void addScrapMenuEvent(IScrapMenuListener listener)
         {
             ScrapSubMenuOpening = (ScrapBase.ScrapSubMenuHandler)Delegate.Combine(ScrapSubMenuOpening, new ScrapBase.ScrapSubMenuHandler(listener.ScrapMenuOpening));
@@ -635,35 +552,33 @@ namespace SETUNA.Main
 
         public void addScrapLocationChangedEvent(IScrapLocationChangedListener listener)
         {
-            ScrapLocationChangedEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapLocationChangedEvent, new ScrapBase.ScrapEventHandler(listener.ScrapLocationChanged));
+            ScrapLocationChanged = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapLocationChanged, new ScrapBase.ScrapEventHandler(listener.ScrapLocationChanged));
         }
 
         public void fireScrapLocationChangedEvent()
         {
-            if (ScrapLocationChangedEvent != null)
+            if (ScrapLocationChanged != null)
             {
-                ScrapLocationChangedEvent(this, new ScrapEventArgs(this));
+                ScrapLocationChanged(this, new ScrapEventArgs(this));
             }
         }
 
-        public void addScrapImageChangedEvent(IScrapImageChangedListener listener)
+        public void AddScrapImageChangedListener(IScrapImageChangedListener listener)
         {
-            ScrapImageChangedEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapImageChangedEvent, new ScrapBase.ScrapEventHandler(listener.ScrapImageChanged));
+            ScrapImageChanged += listener.OnScrapImageChanged;
         }
 
-        public void addScrapStyleAppliedEvent(IScrapStyleAppliedListener listener)
+        public void AddScrapStyleAppliedListener(IScrapStyleAppliedListener listener)
         {
-            ScrapStyleAppliedEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapStyleAppliedEvent, new ScrapBase.ScrapEventHandler(listener.ScrapStyleApplied));
+            ScrapStyleApplied += listener.OnScrapStyleApplied;
         }
 
-        public void addScrapStyleRemovedEvent(IScrapStyleRemovedListener listener)
+        public void AddScrapStyleRemovedListener(IScrapStyleRemovedListener listener)
         {
-            ScrapStyleRemovedEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapStyleRemovedEvent, new ScrapBase.ScrapEventHandler(listener.ScrapStyleRemoved));
+            ScrapStyleRemoved += listener.OnScrapStyleRemoved;
         }
 
-
-        // Token: 0x06000083 RID: 131 RVA: 0x0000460B File Offset: 0x0000280B
-        private void ScrapBase_MouseClick(object sender, MouseEventArgs e)
+        private void OnScrapMouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Right && ScrapSubMenuOpening != null)
             {
@@ -671,9 +586,6 @@ namespace SETUNA.Main
             }
         }
 
-        // Token: 0x1700001C RID: 28
-        // (get) Token: 0x06000085 RID: 133 RVA: 0x00004664 File Offset: 0x00002864
-        // (set) Token: 0x06000084 RID: 132 RVA: 0x00004635 File Offset: 0x00002835
         public new bool Visible
         {
             get => base.Visible;
@@ -693,10 +605,9 @@ namespace SETUNA.Main
             }
         }
 
-        // Token: 0x06000086 RID: 134 RVA: 0x0000466C File Offset: 0x0000286C
         public new void SetBounds(int x, int y, int width, int height, BoundsSpecified specified)
         {
-            SetBoundsCore(x, y, width, height, specified);
+            base.SetBounds(x, y, width + Padding.All * 2, height + Padding.All * 2, specified);
         }
 
         public void ApplyStylesFromCache(CStyle style, Point clickpoint, Action applyFinished = null)
@@ -708,7 +619,6 @@ namespace SETUNA.Main
             ApplyStyles(style.StyleID, styleItems.ToArray(), clickpoint);
         }
 
-        // Token: 0x06000087 RID: 135 RVA: 0x0000467C File Offset: 0x0000287C
         public void ApplyStyles(int styleID, CStyleItem[] styleItems, Point clickpoint)
         {
             if (IsStyleApply)
@@ -732,7 +642,6 @@ namespace SETUNA.Main
             StyleApplyTimer.Start();
         }
 
-        // Token: 0x06000088 RID: 136 RVA: 0x000046FC File Offset: 0x000028FC
         public void OnStyleApplyTimerTick(object sender, EventArgs e)
         {
             StyleApplyTimer.Enabled = false;
@@ -768,9 +677,9 @@ namespace SETUNA.Main
                 _applyFinished?.Invoke();
                 _applyFinished = null;
 
-                if (ScrapStyleAppliedEvent != null)
+                if (ScrapStyleApplied != null)
                 {
-                    ScrapStyleAppliedEvent(this, new ScrapEventArgs(this));
+                    ScrapStyleApplied(this, new ScrapEventArgs(this));
                 }
             }
             IsStyleApply = false;
@@ -793,22 +702,19 @@ namespace SETUNA.Main
                 _styleID = 0;
                 _styleClickPoint = Point.Empty;
 
-                if (ScrapStyleRemovedEvent != null)
+                if (ScrapStyleRemoved != null)
                 {
-                    ScrapStyleRemovedEvent(this, new ScrapEventArgs(this));
+                    ScrapStyleRemoved(this, new ScrapEventArgs(this));
                 }
             }
         }
 
-
-        // Token: 0x06000089 RID: 137 RVA: 0x000047E0 File Offset: 0x000029E0
-        private void ScrapBase_MouseDoubleClick(object sender, MouseEventArgs e)
+        private void OnScrapMouseDoubleClick(object sender, MouseEventArgs e)
         {
             Manager.WClickStyle(this, e.Location);
         }
 
-        // Token: 0x0600008A RID: 138 RVA: 0x000047F4 File Offset: 0x000029F4
-        private void ScrapBase_DragDrop(object sender, DragEventArgs e)
+        private void OnScrapDragEnd(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -831,8 +737,7 @@ namespace SETUNA.Main
             }
         }
 
-        // Token: 0x0600008B RID: 139 RVA: 0x00004847 File Offset: 0x00002A47
-        private void ScrapBase_DragEnter(object sender, DragEventArgs e)
+        private void OnScrapDragBegin(object sender, DragEventArgs e)
         {
             if (Manager.IsImageDrag)
             {
@@ -845,18 +750,17 @@ namespace SETUNA.Main
         {
             base.OnLocationChanged(e);
 
-            if (ScrapLocationChangedEvent != null)
+            if (ScrapLocationChanged != null)
             {
-                ScrapLocationChangedEvent(e, new ScrapEventArgs(this));
+                ScrapLocationChanged(e, new ScrapEventArgs(this));
             }
         }
 
-
-        private void ScrapBase_SizeChanged(object sender, EventArgs e)
+        private void OnScrapSizeChanged(object sender, EventArgs e)
         {
         }
 
-        private void ScrapBase_VisibleChanged(object sender, EventArgs e)
+        private void OnScrapVisibleChanged(object sender, EventArgs e)
         {
             _visible = Visible;
         }
@@ -866,108 +770,5 @@ namespace SETUNA.Main
         {
             return _visible;
         }
-
-
-        // Token: 0x04000021 RID: 33
-        private const int WS_EX_LAYERED = 524288;
-
-        // Token: 0x04000022 RID: 34
-        private const int GWL_EXSTYLE = -20;
-
-        // Token: 0x04000023 RID: 35
-        public ScrapManager _scrapManager;
-
-        // Token: 0x04000024 RID: 36
-        private Image imgView;
-
-        // Token: 0x04000025 RID: 37
-        private bool closePrepare;
-
-        // Token: 0x04000026 RID: 38
-        private string _name;
-
-        // Token: 0x04000027 RID: 39
-        private DateTime _datetime;
-
-        // Token: 0x04000028 RID: 40
-        private int _scale;
-
-        // Token: 0x04000029 RID: 41
-        private bool _solidframe;
-
-        // Token: 0x0400002A RID: 42
-        private bool _dragmode;
-
-        // Token: 0x0400002B RID: 43
-        private Point _dragpoint;
-
-        // Token: 0x0400002C RID: 44
-        private double _saveopacity;
-
-        // Token: 0x0400002F RID: 47
-        private bool _blTargetSet;
-
-        // Token: 0x04000030 RID: 48
-        private Point _ptTarget;
-
-        // Token: 0x04000031 RID: 49
-        private Timer StyleApplyTimer;
-
-        // Token: 0x04000032 RID: 50
-        private int StyleAppliIndex;
-
-        // Token: 0x04000033 RID: 51
-        private int _styleID;
-
-        private List<CStyleItem> _styleItems;
-
-        // Token: 0x04000034 RID: 52
-        private bool IsStyleApply;
-
-        private SetunaOption _optSetuna;
-
-        // Token: 0x04000035 RID: 53
-        private Point _styleClickPoint = Point.Empty;
-
-        // Token: 0x04000036 RID: 54
-        public bool Initialized;
-
-        // Token: 0x0400003F RID: 63
-        private double _targetOpacity;
-
-        // Token: 0x04000040 RID: 64
-        private bool _isMouseEnter;
-
-        // Token: 0x04000043 RID: 67
-        private double _mouseEnterOpacity;
-
-        private double _mouseLeaveOpacity;
-
-        // Token: 0x04000044 RID: 68
-        private int _activeMargin;
-
-        // Token: 0x04000045 RID: 69
-        private int _inactiveMargin;
-
-        // Token: 0x04000046 RID: 70
-        private int _rolloverMargin;
-
-        // Token: 0x04000047 RID: 71
-        private InterpolationMode _interpolationmode;
-
-        private Cache.CacheItem _cacheItem;
-
-        private Action _applyFinished;
-
-        // Token: 0x0200002B RID: 43
-        // (Invoke) Token: 0x060001A6 RID: 422
-        public delegate void ScrapEventHandler(object sender, ScrapEventArgs e);
-
-        // Token: 0x0200002D RID: 45
-        // (Invoke) Token: 0x060001AC RID: 428
-        public delegate void ScrapSubMenuHandler(object sender, ScrapMenuArgs e);
-
-        private bool _visible = true;
-
     }
 }

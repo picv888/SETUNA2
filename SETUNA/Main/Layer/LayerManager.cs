@@ -79,8 +79,6 @@ namespace SETUNA.Main.Layer
 
         public void RefreshLayer()
         {
-            Console.WriteLine("RefreshLayer");
-
             sortingFormDatas.Clear();
             sortingFormDatas.AddRange(formDic.Values);
             sortingFormDatas.Sort((x, y) => x.SortingOrder.CompareTo(y.SortingOrder));
@@ -133,19 +131,16 @@ namespace SETUNA.Main.Layer
 
         void CheckRefreshLayer(WindowInfo windowInfo)
         {
-            // 是否挂起
             if (isSuspendCount > 0)
             {
                 return;
             }
 
-            // 是否当前项目的窗体
             if (formDic.ContainsKey(windowInfo.Handle))
             {
                 return;
             }
 
-            // 是否过滤
             if ((windowFilter?.IsFilter(windowInfo) ?? false == true))
             {
                 return;
@@ -156,7 +151,6 @@ namespace SETUNA.Main.Layer
 
             if (topMostInfo == null) return;
 
-            // 当前项目的顶级窗体 与 其他Windows程序的 比较 排序值
             if (topMostInfo.ZOrder >= windowInfo.ZOrder)
             {
                 return;
@@ -167,7 +161,9 @@ namespace SETUNA.Main.Layer
             {
                 var childInfo = item.WindowInfo;
                 // 当前项目的所有打开的图片窗体 与 其他Windows程序 比较 相交性
-                if (item.Form is ScrapBase && childInfo.Rect.IntersectsWith(windowInfo.Rect))
+                if (item.Form is ScrapBase &&
+                    item.Form.Visible &&
+                    childInfo.Rect.IntersectsWith(windowInfo.Rect))
                 {
 #if DEBUG
                     Console.WriteLine($"hasIntersect: setuna {childInfo.Rect} and other window {windowInfo.Rect}");
