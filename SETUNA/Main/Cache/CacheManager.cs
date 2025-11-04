@@ -18,8 +18,8 @@ namespace SETUNA.Main.Cache
         {
             IsInit = false;
             var scrapBook = Mainform.Instance.scrapBook;
-            scrapBook.addScrapAddedListener(this);
-            scrapBook.addScrapRemovedListener(this);
+            scrapBook.AddScrapAddedListener(this);
+            scrapBook.AddScrapRemovedListener(this);
 
             RestoreScraps(scrapBook);
         }
@@ -28,7 +28,7 @@ namespace SETUNA.Main.Cache
         {
         }
 
-        void RestoreScraps(ScrapBook mainBook)
+        void RestoreScraps(ScrapManager mainBook)
         {
             var directoryInfo = new DirectoryInfo(Path);
             if (!directoryInfo.Exists)

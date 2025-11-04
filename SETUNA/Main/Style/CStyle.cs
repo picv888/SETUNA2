@@ -244,7 +244,7 @@ namespace SETUNA.Main.Style
         }
 
         // Token: 0x0600023F RID: 575 RVA: 0x0000BC0D File Offset: 0x00009E0D
-        public virtual ToolStripItem GetToolStrip(ScrapBook scrapbook)
+        public virtual ToolStripItem GetToolStrip(ScrapManager scrapbook)
         {
             return GetToolStrip();
         }

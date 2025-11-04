@@ -441,16 +441,16 @@ namespace SETUNA.Main
         // Token: 0x17000018 RID: 24
         // (get) Token: 0x0600006F RID: 111 RVA: 0x0000425E File Offset: 0x0000245E
         // (set) Token: 0x0600006E RID: 110 RVA: 0x00004204 File Offset: 0x00002404
-        public ScrapBook Manager
+        public ScrapManager Manager
         {
-            get => _parent;
+            get => _scrapManager;
             set
             {
-                _parent = value;
+                _scrapManager = value;
                 if (ScrapCloseEvent == null)
                 {
-                    ScrapCloseEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapCloseEvent, new ScrapBase.ScrapEventHandler(_parent.ScrapClose));
-                    base.KeyDown += _parent.OnKeyUp;
+                    ScrapCloseEvent = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapCloseEvent, new ScrapBase.ScrapEventHandler(_scrapManager.ScrapClose));
+                    KeyDown += _scrapManager.OnScrapKeyDown;
                 }
             }
         }
@@ -726,14 +726,14 @@ namespace SETUNA.Main
                 {
                     Enabled = false
                 };
-                StyleApplyTimer.Tick += ApplyStyleItem;
+                StyleApplyTimer.Tick += OnStyleApplyTimerTick;
             }
             StyleApplyTimer.Interval = 1;
             StyleApplyTimer.Start();
         }
 
         // Token: 0x06000088 RID: 136 RVA: 0x000046FC File Offset: 0x000028FC
-        public void ApplyStyleItem(object sender, EventArgs e)
+        public void OnStyleApplyTimerTick(object sender, EventArgs e)
         {
             StyleApplyTimer.Enabled = false;
             if (StyleAppliIndex < _styleItems.Count)
@@ -875,7 +875,7 @@ namespace SETUNA.Main
         private const int GWL_EXSTYLE = -20;
 
         // Token: 0x04000023 RID: 35
-        public ScrapBook _parent;
+        public ScrapManager _scrapManager;
 
         // Token: 0x04000024 RID: 36
         private Image imgView;

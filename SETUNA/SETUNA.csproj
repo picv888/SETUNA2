@@ -245,7 +245,7 @@
     <Compile Include="Main\ScrapBase.Designer.cs">
       <DependentUpon>ScrapBase.cs</DependentUpon>
     </Compile>
-    <Compile Include="Main\ScrapBook.cs" />
+    <Compile Include="Main\ScrapManager.cs" />
     <Compile Include="Main\ScrapEventArgs.cs" />
     <Compile Include="Main\ScrapKeyPressEventArgs.cs" />
     <Compile Include="Main\ScrapMenuArgs.cs" />

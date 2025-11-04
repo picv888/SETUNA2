@@ -28,10 +28,10 @@ namespace SETUNA
             _iscapture = false;
             _isoption = false;
             InitializeComponent();
-            scrapBook = new ScrapBook(this);
-            scrapBook.addKeyPressListener(this);
-            scrapBook.addScrapAddedListener(this);
-            scrapBook.addScrapRemovedListener(this);
+            scrapBook = new ScrapManager(this);
+            scrapBook.AddKeyPressListener(this);
+            scrapBook.AddScrapAddedListener(this);
+            scrapBook.AddScrapRemovedListener(this);
             dustbox = new Queue<ScrapBase>();
             scrapBook.DustBox = dustbox;
             scrapBook.DustBoxCapacity = 5;
@@ -922,7 +922,7 @@ namespace SETUNA
         private SplashForm frmSplash;
 
         // Token: 0x040000E2 RID: 226
-        public ScrapBook scrapBook;
+        public ScrapManager scrapBook;
 
         // Token: 0x040000E3 RID: 227
         public SetunaOption optSetuna;

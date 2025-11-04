@@ -13,7 +13,7 @@ namespace SETUNA.Main
         }
 
         // Token: 0x06000543 RID: 1347 RVA: 0x00024782 File Offset: 0x00022982
-        public ToolStripAbstractList(string text, ScrapBook scrapbook) : base(text)
+        public ToolStripAbstractList(string text, ScrapManager scrapbook) : base(text)
         {
             _scrapbook = scrapbook;
             base.DropDownItems.Clear();
@@ -114,7 +114,7 @@ namespace SETUNA.Main
         }
 
         // Token: 0x0400034F RID: 847
-        protected ScrapBook _scrapbook;
+        protected ScrapManager _scrapbook;
 
         // Token: 0x04000350 RID: 848
         private bool _createdlist;

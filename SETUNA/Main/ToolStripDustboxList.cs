@@ -7,7 +7,7 @@ namespace SETUNA.Main
     public class ToolStripDustboxList : ToolStripAbstractList
     {
         // Token: 0x0600053F RID: 1343 RVA: 0x00024730 File Offset: 0x00022930
-        public ToolStripDustboxList(string text, ScrapBook scrapbook) : base(text, scrapbook)
+        public ToolStripDustboxList(string text, ScrapManager scrapbook) : base(text, scrapbook)
         {
         }
 

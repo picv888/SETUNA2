@@ -6,7 +6,7 @@ namespace SETUNA.Main
     public class ToolStripScrapList : ToolStripAbstractList
     {
         // Token: 0x0600053C RID: 1340 RVA: 0x000246B1 File Offset: 0x000228B1
-        public ToolStripScrapList(string text, ScrapBook scrapbook) : base(text, scrapbook)
+        public ToolStripScrapList(string text, ScrapManager scrapbook) : base(text, scrapbook)
         {
         }
 
