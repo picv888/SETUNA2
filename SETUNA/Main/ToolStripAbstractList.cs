@@ -16,7 +16,7 @@ namespace SETUNA.Main
             _scrapbook = scrapbook;
             base.DropDownItems.Clear();
             base.DropDownItems.Insert(0, new ToolStripMenuItem("无"));
-
+            
             ToolStripEx.BigButtons(DropDown);
         }
 
@@ -85,5 +85,6 @@ namespace SETUNA.Main
         protected ScrapManager _scrapbook;
 
         private bool _createdlist;
+
     }
 }

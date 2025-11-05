@@ -4,6 +4,6 @@ namespace SETUNA.Main.Style
 {
     public interface IStyleMenu
     {
-        ToolStripItem GetToolStrip();
+        ToolStripItem GetMenuItem();
     }
 }

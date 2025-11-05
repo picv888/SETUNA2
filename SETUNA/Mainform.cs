@@ -14,7 +14,7 @@ using SETUNA.Main.Style;
 
 namespace SETUNA
 {
-    public sealed partial class Mainform : BaseForm, IScrapKeyPressEventListener, IScrapMenuListener, ISingletonForm
+    public sealed partial class Mainform : BaseForm, IScrapMenuListener, ISingletonForm
     {
         private SplashForm frmSplash;
         private ClickCapture frmClickCapture;
@@ -44,7 +44,7 @@ namespace SETUNA
             _isoption = false;
             InitializeComponent();
             scrapManager = new ScrapManager(this);
-            scrapManager.AddKeyPressListener(this);
+            scrapManager.keyPressed += ScrapKeyPress;
             dustbox = new Queue<ScrapBase>();
             scrapManager.DustBox = dustbox;
             scrapManager.DustBoxCapacity = 5;
@@ -96,18 +96,18 @@ namespace SETUNA
         private void SetSubMenu()
         {
             _trayIconMenu.Items.Clear();
-            _trayIconMenu.Items.Add(new CScrapListStyle().GetToolStrip(scrapManager));
-            _trayIconMenu.Items.Add(new CDustBoxStyle().GetToolStrip(scrapManager));
-            _trayIconMenu.Items.Add(new CDustEraseStyle().GetToolStrip());
-            _trayIconMenu.Items.Add(new CDustScrapStyle().GetToolStrip());
+            _trayIconMenu.Items.Add(new CScrapListStyle().GetMenuItem(scrapManager));
+            _trayIconMenu.Items.Add(new CDustBoxStyle().GetMenuItem(scrapManager));
+            _trayIconMenu.Items.Add(new CDustEraseStyle().GetMenuItem());
+            _trayIconMenu.Items.Add(new CDustScrapStyle().GetMenuItem());
             _trayIconMenu.Items.Add(new ToolStripSeparator());
-            _trayIconMenu.Items.Add(new CCaptureStyle().GetToolStrip());
-            _trayIconMenu.Items.Add(new CPasteStyle().GetToolStrip());
+            _trayIconMenu.Items.Add(new CCaptureStyle().GetMenuItem());
+            _trayIconMenu.Items.Add(new CPasteStyle().GetMenuItem());
             _trayIconMenu.Items.Add(new ToolStripSeparator());
-            _trayIconMenu.Items.Add(new CShowVersionStyle().GetToolStrip());
-            _trayIconMenu.Items.Add(new COptionStyle().GetToolStrip());
+            _trayIconMenu.Items.Add(new CShowVersionStyle().GetMenuItem());
+            _trayIconMenu.Items.Add(new COptionStyle().GetMenuItem());
             _trayIconMenu.Items.Add(new ToolStripSeparator());
-            _trayIconMenu.Items.Add(new CShutDownStyle().GetToolStrip());
+            _trayIconMenu.Items.Add(new CShutDownStyle().GetMenuItem());
         }
 
         public void StartCapture()
@@ -296,7 +296,7 @@ namespace SETUNA
                                 var cstyle = enumerator2.Current;
                                 if (cstyle.StyleID == num)
                                 {
-                                    _subMenu.Items.Add(cstyle.GetToolStrip());
+                                    _subMenu.Items.Add(cstyle.GetMenuItem());
                                 }
                             }
                             continue;
@@ -305,7 +305,7 @@ namespace SETUNA
                     var preStyle = CPreStyles.GetPreStyle(num);
                     if (preStyle != null)
                     {
-                        _subMenu.Items.Add(preStyle.GetToolStrip());
+                        _subMenu.Items.Add(preStyle.GetMenuItem());
                     }
                 }
                 if (optSetuna.Setuna.ClickCapture)
@@ -340,11 +340,6 @@ namespace SETUNA
         private void frmClickCapture_ClickCaptureEvent(object sender, EventArgs e)
         {
             StartCapture();
-        }
-
-        private void CloseSetuna()
-        {
-            base.Close();
         }
 
         public void ScrapKeyPress(object sender, ScrapKeyPressEventArgs e)

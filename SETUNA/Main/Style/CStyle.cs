@@ -231,7 +231,7 @@ namespace SETUNA.Main.Style
             _keys.Remove((Keys)sender);
         }
 
-        public virtual ToolStripItem GetToolStrip()
+        public virtual ToolStripItem GetMenuItem()
         {
             return new ToolStripStyleButton(this);
         }

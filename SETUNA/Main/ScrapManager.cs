@@ -243,19 +243,14 @@ namespace SETUNA.Main
             }
         }
 
-        public void AddKeyPressListener(IScrapKeyPressEventListener listener)
-        {
-            keyPressed = (ScrapManager.KeyPressHandler)Delegate.Combine(keyPressed, new ScrapManager.KeyPressHandler(listener.ScrapKeyPress));
-        }
-
         public void AddScrapAddedListener(IScrapAddedListener listener)
         {
-            ScrapAdded = (ScrapManager.ScrapAddedHandler)Delegate.Combine(ScrapAdded, new ScrapManager.ScrapAddedHandler(listener.ScrapAdded));
+            ScrapAdded += listener.ScrapAdded;
         }
 
         public void AddScrapRemovedListener(IScrapRemovedListener listener)
         {
-            scrapRemoved = (ScrapManager.ScrapRemovedHandler)Delegate.Combine(scrapRemoved, new ScrapManager.ScrapRemovedHandler(listener.ScrapRemoved));
+            scrapRemoved += listener.ScrapRemoved;
         }
 
         public void WClickStyle(ScrapBase scrap, Point clickpoint)

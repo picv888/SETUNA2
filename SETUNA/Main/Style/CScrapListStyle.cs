@@ -11,7 +11,7 @@ namespace SETUNA.Main.Style
             _stylename = "参考图名单";
         }
 
-        public ToolStripItem GetToolStrip(ScrapManager scrapbook)
+        public ToolStripItem GetMenuItem(ScrapManager scrapbook)
         {
             return new ToolStripScrapList(base.GetDisplayName(), scrapbook);
         }

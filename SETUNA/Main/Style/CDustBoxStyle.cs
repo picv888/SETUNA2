@@ -13,7 +13,7 @@ namespace SETUNA.Main.Style
         }
 
         // Token: 0x060002BD RID: 701 RVA: 0x0000F512 File Offset: 0x0000D712
-        public ToolStripItem GetToolStrip(ScrapManager scrapbook)
+        public ToolStripItem GetMenuItem(ScrapManager scrapbook)
         {
             return new ToolStripDustboxList(base.GetDisplayName(), scrapbook);
         }

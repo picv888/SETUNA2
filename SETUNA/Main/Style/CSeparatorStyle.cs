@@ -13,7 +13,7 @@ namespace SETUNA.Main.Style
         }
 
         // Token: 0x0600039C RID: 924 RVA: 0x00016275 File Offset: 0x00014475
-        public override ToolStripItem GetToolStrip()
+        public override ToolStripItem GetMenuItem()
         {
             return new ToolStripSeparator();
         }

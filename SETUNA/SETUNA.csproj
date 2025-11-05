@@ -210,7 +210,6 @@
     <Compile Include="Main\IFormDeactivatedListener.cs" />
     <Compile Include="Main\IFormActivatedListener.cs" />
     <Compile Include="Main\IScrapAddedListener.cs" />
-    <Compile Include="Main\IScrapKeyPressEventListener.cs" />
     <Compile Include="Main\IScrapImageChangedListener.cs" />
     <Compile Include="Main\IScrapStyleRemovedListener.cs" />
     <Compile Include="Main\IScrapStyleAppliedListener.cs" />
