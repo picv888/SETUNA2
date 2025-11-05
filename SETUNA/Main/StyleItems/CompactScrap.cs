@@ -106,7 +106,6 @@ namespace SETUNA.Main.StyleItems
                 if (scrap != null)
                 {
                     ConvertCompactPosToScrap();
-                    scrap.fireScrapLocationChangedEvent();
                 }
             }
         }

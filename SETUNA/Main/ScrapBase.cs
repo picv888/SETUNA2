@@ -16,9 +16,8 @@ namespace SETUNA.Main
     {
         private const int WS_EX_LAYERED = 524288;
         private const int GWL_EXSTYLE = -20;
-        public ScrapManager _scrapManager;
-        private Image imgView;
-        private bool closePrepare;
+        private Image _imgView;
+        private bool _isClosing;
         private string _name;
         private DateTime _datetime;
         private int _scale;
@@ -35,7 +34,6 @@ namespace SETUNA.Main
         private bool IsStyleApply;
         private SetunaOption _optSetuna;
         private Point _styleClickPoint = Point.Empty;
-        public bool Initialized;
         private double _targetOpacity;
         private bool _isMouseEnter;
         private double _mouseEnterOpacity;
@@ -47,10 +45,14 @@ namespace SETUNA.Main
         private Cache.CacheItem _cacheItem;
         private Action _applyFinished;
         private bool _solidFrame;
-        public delegate void ScrapEventHandler(object sender, ScrapEventArgs e);
-        public delegate void ScrapSubMenuHandler(object sender, ScrapMenuArgs e);
         private bool _visible = true;
 
+        public ScrapManager scrapManager;
+        public bool initialized;
+
+        public delegate void ScrapEventHandler(object sender, ScrapEventArgs e);
+        public delegate void ScrapSubMenuHandler(object sender, ScrapMenuArgs e);
+        
         public event ScrapBase.ScrapEventHandler ScrapClose;
         public event ScrapBase.ScrapEventHandler ScrapCreate;
         public event ScrapBase.ScrapEventHandler ScrapActive;
@@ -137,7 +139,7 @@ namespace SETUNA.Main
             _optSetuna = Mainform.Instance.optSetuna;
             KeyPreview = true;
             SolidFrame = true;
-            closePrepare = false;
+            _isClosing = false;
             _dragmode = false;
             _scale = 100;
             _blTargetSet = false;
@@ -150,6 +152,8 @@ namespace SETUNA.Main
             _pen = new Pen(Color.Blue);
             _pen.DashStyle = DashStyle.Dash;
             _pen.DashPattern = new float[] { 4f, 4f };
+            CStyle cstyle = _optSetuna.FindStyle(_optSetuna.Scrap.createStyleID);
+            cstyle?.Apply(this);
         }
 
         ~ScrapBase()
@@ -159,7 +163,7 @@ namespace SETUNA.Main
 
         private void ImageAllDispose()
         {
-            ImageDispose(ref imgView);
+            ImageDispose(ref _imgView);
         }
 
         public double TargetOpacity
@@ -216,12 +220,12 @@ namespace SETUNA.Main
 
         public Image Image
         {
-            get => imgView;
+            get => _imgView;
             set
             {
                 ImageAllDispose();
-                imgView = (Image)value.Clone();
-                if (imgView == null)
+                _imgView = (Image)value.Clone();
+                if (_imgView == null)
                 {
                     Console.WriteLine("ScrapBase Image : unll");
                 }
@@ -262,13 +266,13 @@ namespace SETUNA.Main
             var bitmap = new Bitmap(230, 150, PixelFormat.Format24bppRgb);
             var graphics = Graphics.FromImage(bitmap);
             graphics.FillRectangle(Brushes.DarkGray, 0, 0, bitmap.Width, bitmap.Height);
-            if (imgView.Width <= bitmap.Width - 1 || imgView.Height <= bitmap.Height - 1)
+            if (_imgView.Width <= bitmap.Width - 1 || _imgView.Height <= bitmap.Height - 1)
             {
-                graphics.DrawImageUnscaled(imgView, 1, 1);
+                graphics.DrawImageUnscaled(_imgView, 1, 1);
             }
             else
             {
-                var size = new Size(imgView.Width - 1, imgView.Height - 1);
+                var size = new Size(_imgView.Width - 1, _imgView.Height - 1);
                 double num;
                 if (size.Width - bitmap.Width - 1 <= size.Height - bitmap.Height - 1)
                 {
@@ -281,7 +285,7 @@ namespace SETUNA.Main
                 size.Width = (int)(size.Width * num);
                 size.Height = (int)(size.Height * num);
                 graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.DrawImage(imgView, 1, 1, size.Width, size.Height);
+                graphics.DrawImage(_imgView, 1, 1, size.Width, size.Height);
             }
             graphics.DrawRectangle(Pens.Black, 0, 0, bitmap.Width - 1, bitmap.Height - 1);
             return bitmap;
@@ -296,12 +300,12 @@ namespace SETUNA.Main
             {
                 e.Graphics.Clear(Color.Green);
                 TransparencyKey = Color.Green;
-                e.Graphics.DrawImage(imgView, margin, margin, imgView.Width, imgView.Height);
+                e.Graphics.DrawImage(_imgView, margin, margin, _imgView.Width, _imgView.Height);
             }
             else
             {
                 e.Graphics.Clear(Color.White);
-                e.Graphics.DrawImage(imgView, margin, margin, imgView.Width, imgView.Height);
+                e.Graphics.DrawImage(_imgView, margin, margin, _imgView.Width, _imgView.Height);
             }
             e.Graphics.DrawRectangle(_pen, new Rectangle(0, 0, Width - 1, Height - 1));
         }
@@ -321,8 +325,8 @@ namespace SETUNA.Main
 
                 var x = Left - value.All;
                 var y = Top - value.All;
-                var num = (int)(imgView.Width * (_scale / 100f)) + value.All * 2;
-                var num2 = (int)(imgView.Height * (_scale / 100f)) + value.All * 2;
+                var num = (int)(_imgView.Width * (_scale / 100f)) + value.All * 2;
+                var num2 = (int)(_imgView.Height * (_scale / 100f)) + value.All * 2;
                 SetBoundsCore(x, y, num, num2, BoundsSpecified.Location);
                 base.ClientSize = new Size(num, num2);
             }
@@ -341,7 +345,7 @@ namespace SETUNA.Main
             {
                 Console.WriteLine("由系统结束");
             }
-            else if (!closePrepare)
+            else if (!_isClosing)
             {
                 e.Cancel = true;
                 OnScrapClose(new ScrapEventArgs(this));
@@ -375,21 +379,21 @@ namespace SETUNA.Main
 
         public void PrepareClose()
         {
-            closePrepare = true;
+            _isClosing = true;
             base.Close();
             GC.Collect();
         }
 
         public ScrapManager Manager
         {
-            get => _scrapManager;
+            get => scrapManager;
             set
             {
-                _scrapManager = value;
+                scrapManager = value;
                 if (ScrapClose == null)
                 {
-                    ScrapClose = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapClose, new ScrapBase.ScrapEventHandler(_scrapManager.ScrapClose));
-                    KeyDown += _scrapManager.OnScrapKeyDown;
+                    ScrapClose = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapClose, new ScrapBase.ScrapEventHandler(scrapManager.ScrapClose));
+                    KeyDown += scrapManager.OnScrapKeyDown;
                 }
             }
         }
@@ -424,8 +428,8 @@ namespace SETUNA.Main
                 {
                     _scale = 200;
                 }
-                base.Width = (int)(imgView.Width * (_scale / 100f)) + Padding.All * 2;
-                base.Height = (int)(imgView.Height * (_scale / 100f)) + Padding.All * 2;
+                base.Width = (int)(_imgView.Width * (_scale / 100f)) + Padding.All * 2;
+                base.Height = (int)(_imgView.Height * (_scale / 100f)) + Padding.All * 2;
                 Refresh();
             }
         }
@@ -490,7 +494,7 @@ namespace SETUNA.Main
             }
         }
 
-        public void addScrapStyleEvent(IScrapStyleListener listener)
+        public void AddScrapListener(IScrapStyleListener listener)
         {
             ScrapCreate = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapCreate, new ScrapBase.ScrapEventHandler(listener.ScrapCreated));
             ScrapActive = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapActive, new ScrapBase.ScrapEventHandler(listener.ScrapActivated));
@@ -545,22 +549,14 @@ namespace SETUNA.Main
             TargetOpacity = _optSetuna.Scrap.mouseLeaveAlphaChange ? opacity : 1.0;
         }
 
-        public void addScrapMenuEvent(IScrapMenuListener listener)
+        public void AddScrapMenuListener(IScrapMenuListener listener)
         {
-            ScrapSubMenuOpening = (ScrapBase.ScrapSubMenuHandler)Delegate.Combine(ScrapSubMenuOpening, new ScrapBase.ScrapSubMenuHandler(listener.ScrapMenuOpening));
+            ScrapSubMenuOpening += listener.ScrapMenuOpening;
         }
 
-        public void addScrapLocationChangedEvent(IScrapLocationChangedListener listener)
+        public void AddScrapLocationChangedListener(IScrapLocationChangedListener listener)
         {
-            ScrapLocationChanged = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapLocationChanged, new ScrapBase.ScrapEventHandler(listener.ScrapLocationChanged));
-        }
-
-        public void fireScrapLocationChangedEvent()
-        {
-            if (ScrapLocationChanged != null)
-            {
-                ScrapLocationChanged(this, new ScrapEventArgs(this));
-            }
+            ScrapLocationChanged += listener.ScrapLocationChanged;
         }
 
         public void AddScrapImageChangedListener(IScrapImageChangedListener listener)
@@ -652,7 +648,7 @@ namespace SETUNA.Main
                 try
                 {
                     var cstyleItem = _styleItems[StyleAppliIndex];
-                    if (Initialized || (!Initialized && cstyleItem.IsInitApply))
+                    if (initialized || (!initialized && cstyleItem.IsInitApply))
                     {
                         cstyleItem.Apply(ref scrapBase, out num, _styleClickPoint);
                     }
@@ -684,9 +680,9 @@ namespace SETUNA.Main
             }
             IsStyleApply = false;
         IL_AD:
-            if (!IsStyleApply && !Initialized)
+            if (!IsStyleApply && !initialized)
             {
-                Initialized = true;
+                initialized = true;
             }
         }
 

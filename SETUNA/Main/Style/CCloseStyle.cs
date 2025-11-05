@@ -14,7 +14,7 @@ namespace SETUNA.Main.Style
         }
 
         // Token: 0x0600046A RID: 1130 RVA: 0x0001C9E8 File Offset: 0x0001ABE8
-        public override void Apply(ref ScrapBase scrap)
+        public override void Apply(ScrapBase scrap)
         {
             var ccloseStyleItem = new CCloseStyleItem();
             ccloseStyleItem.Apply(ref scrap, Point.Empty);

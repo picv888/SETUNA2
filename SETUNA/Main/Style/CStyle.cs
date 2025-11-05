@@ -7,7 +7,6 @@ using SETUNA.Main.StyleItems;
 
 namespace SETUNA.Main.Style
 {
-    // Token: 0x0200003B RID: 59
     public class CStyle : IScrapStyle, ICloneable, IKeyItemListener, IStyleMenu
     {
         // Token: 0x17000058 RID: 88
@@ -90,8 +89,7 @@ namespace SETUNA.Main.Style
             _keys = new List<Keys>();
         }
 
-        // Token: 0x0600022B RID: 555 RVA: 0x0000B9E0 File Offset: 0x00009BE0
-        public virtual void Apply(ref ScrapBase scrap)
+        public virtual void Apply(ScrapBase scrap)
         {
             try
             {
@@ -231,22 +229,14 @@ namespace SETUNA.Main.Style
             _keys.Clear();
         }
 
-        // Token: 0x0600023D RID: 573 RVA: 0x0000BBF1 File Offset: 0x00009DF1
         public void ParentMove(object sender, EventArgs e)
         {
             _keys.Remove((Keys)sender);
         }
 
-        // Token: 0x0600023E RID: 574 RVA: 0x0000BC05 File Offset: 0x00009E05
         public virtual ToolStripItem GetToolStrip()
         {
             return new ToolStripStyleButton(this);
-        }
-
-        // Token: 0x0600023F RID: 575 RVA: 0x0000BC0D File Offset: 0x00009E0D
-        public virtual ToolStripItem GetToolStrip(ScrapManager scrapbook)
-        {
-            return GetToolStrip();
         }
 
         // Token: 0x040000EC RID: 236

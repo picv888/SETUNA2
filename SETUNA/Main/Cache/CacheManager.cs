@@ -71,7 +71,7 @@ namespace SETUNA.Main.Cache
         }
 
 
-        void IScrapAddedListener.ScrapAdded(object sender, ScrapEventArgs e)
+        public void ScrapAdded(object sender, ScrapEventArgs e)
         {
             var scrap = e.scrap;
 

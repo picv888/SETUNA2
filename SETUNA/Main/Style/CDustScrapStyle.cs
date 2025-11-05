@@ -13,7 +13,7 @@ namespace SETUNA.Main.Style
         }
 
         // Token: 0x060002BF RID: 703 RVA: 0x0000F53B File Offset: 0x0000D73B
-        public override void Apply(ref ScrapBase scrap)
+        public override void Apply(ScrapBase scrap)
         {
             Layer.LayerManager.Instance.SuspendRefresh();
             var result = MessageBox.Show(Mainform.Instance, "是否关闭所有截图", "提示", MessageBoxButtons.YesNo);

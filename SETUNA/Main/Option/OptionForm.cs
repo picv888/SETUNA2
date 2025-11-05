@@ -213,7 +213,6 @@ namespace SETUNA.Main.Option
             chkSplash.Checked = _so.Setuna.ShowSplashWindow;
         }
 
-        // Token: 0x060002D8 RID: 728 RVA: 0x00013F70 File Offset: 0x00012170
         private void tabControl1_TabIndexChanged(object sender, EventArgs e)
         {
             lblMenuAll.Font = new Font(lblMenuAll.Font, FontStyle.Regular);

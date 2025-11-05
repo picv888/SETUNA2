@@ -27,7 +27,7 @@ namespace SETUNA.Main
             if (_style != null)
             {
                 var scrap = ((ContextStyleMenuStrip)base.Owner).Scrap;
-                _style.Apply(ref scrap);
+                _style.Apply(scrap);
             }
         }
 

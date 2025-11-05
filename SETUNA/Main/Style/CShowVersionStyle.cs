@@ -11,7 +11,7 @@
         }
 
         // Token: 0x060002C3 RID: 707 RVA: 0x0000F5A0 File Offset: 0x0000D7A0
-        public override void Apply(ref ScrapBase scrap)
+        public override void Apply(ScrapBase scrap)
         {
             var splashForm = new SplashForm();
             splashForm.ShowDialog();

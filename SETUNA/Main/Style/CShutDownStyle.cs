@@ -11,7 +11,7 @@
         }
 
         // Token: 0x060002C7 RID: 711 RVA: 0x0000F614 File Offset: 0x0000D814
-        public override void Apply(ref ScrapBase scrap)
+        public override void Apply(ScrapBase scrap)
         {
             var bindForm = scrap.Manager.BindForm;
             bindForm.Close();

@@ -1,169 +1,124 @@
 ﻿namespace SETUNA
 {
-	// Token: 0x02000037 RID: 55
-	sealed partial class Mainform
-	{
-		// Token: 0x060001EC RID: 492 RVA: 0x0000A164 File Offset: 0x00008364
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && this.components != null)
-			{
-				this.components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
+    sealed partial class Mainform
+    {
+        private global::System.ComponentModel.IContainer _components;
+        private global::System.Windows.Forms.Button _button1;
+        private global::System.Windows.Forms.Button _button4;
+        private global::System.Windows.Forms.NotifyIcon _setunaIcon;
+        private global::SETUNA.Main.ContextStyleMenuStrip _setunaIconMenu;
+        private global::SETUNA.Main.ContextStyleMenuStrip _subMenu;
+        private global::System.Windows.Forms.ToolStripMenuItem _testToolStripMenuItem;
+        private global::System.Windows.Forms.Timer _imgPoolTimer;
+        private global::System.Windows.Forms.ToolTip _toolTip1;
+        private global::System.Windows.Forms.Timer _windowTimer;
+        private System.Windows.Forms.Timer _delayInitTimer;
 
-		// Token: 0x060001ED RID: 493 RVA: 0x0000A184 File Offset: 0x00008384
-		private void InitializeComponent()
-		{
-            this.components = new System.ComponentModel.Container();
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && _components != null)
+            {
+                _components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        private void InitializeComponent()
+        {
+            _components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Mainform));
-            this.button1 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.timPool = new System.Windows.Forms.Timer(this.components);
-            this.windowTimer = new System.Windows.Forms.Timer(this.components);
-            this.setunaIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.setunaIconMenu = new SETUNA.Main.ContextStyleMenuStrip(this.components);
-            this.subMenu = new SETUNA.Main.ContextStyleMenuStrip(this.components);
-            this.testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.delayInitTimer = new System.Windows.Forms.Timer(this.components);
-            this.subMenu.SuspendLayout();
-            this.SuspendLayout();
-            // 
-            // button1
-            // 
-            this.button1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            _button1 = new System.Windows.Forms.Button();
+            _button4 = new System.Windows.Forms.Button();
+            _imgPoolTimer = new System.Windows.Forms.Timer(_components);
+            _windowTimer = new System.Windows.Forms.Timer(_components);
+            _setunaIcon = new System.Windows.Forms.NotifyIcon(_components);
+            _setunaIconMenu = new SETUNA.Main.ContextStyleMenuStrip(_components);
+            _subMenu = new SETUNA.Main.ContextStyleMenuStrip(_components);
+            _testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            _toolTip1 = new System.Windows.Forms.ToolTip(_components);
+            _delayInitTimer = new System.Windows.Forms.Timer(_components);
+            _subMenu.SuspendLayout();
+            SuspendLayout();
+
+            _button1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.button1.Font = new System.Drawing.Font("微软雅黑", 14F);
-            this.button1.ForeColor = System.Drawing.Color.Gray;
-            this.button1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.button1.Location = new System.Drawing.Point(0, 0);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(253, 54);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "截取";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // button4
-            // 
-            this.button4.Dock = System.Windows.Forms.DockStyle.Right;
-            this.button4.Font = new System.Drawing.Font("微软雅黑", 9F);
-            this.button4.ForeColor = System.Drawing.Color.Gray;
-            this.button4.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.button4.Location = new System.Drawing.Point(252, 0);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(44, 54);
-            this.button4.TabIndex = 4;
-            this.button4.Text = "选项";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
-            // 
-            // timPool
-            // 
-            this.timPool.Tick += new System.EventHandler(this.timPool_Tick);
-            // 
-            // windowTimer
-            // 
-            this.windowTimer.Enabled = true;
-            this.windowTimer.Interval = 500;
-            this.windowTimer.Tick += new System.EventHandler(this.window_Tick);
-            // 
-            // setunaIcon
-            // 
-            this.setunaIcon.ContextMenuStrip = this.setunaIconMenu;
-            this.setunaIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("setunaIcon.Icon")));
-            this.setunaIcon.Text = "SETUNA2";
-            this.setunaIcon.DoubleClick += new System.EventHandler(this.setunaIcon_MouseDoubleClick);
-            this.setunaIcon.MouseClick += new System.Windows.Forms.MouseEventHandler(this.setunaIcon_MouseClick);
-            // 
-            // setunaIconMenu
-            // 
-            this.setunaIconMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.setunaIconMenu.Name = "setunaIconMenu";
-            this.setunaIconMenu.Scrap = null;
-            this.setunaIconMenu.Size = new System.Drawing.Size(61, 4);
-            this.setunaIconMenu.Opening += new System.ComponentModel.CancelEventHandler(this.setunaIconMenu_Opening);
-            // 
-            // subMenu
-            // 
-            this.subMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
-            this.subMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.testToolStripMenuItem});
-            this.subMenu.Name = "subMenu";
-            this.subMenu.Scrap = null;
-            this.subMenu.Size = new System.Drawing.Size(148, 50);
-            // 
-            // testToolStripMenuItem
-            // 
-            this.testToolStripMenuItem.Name = "testToolStripMenuItem";
-            this.testToolStripMenuItem.Size = new System.Drawing.Size(147, 46);
-            this.testToolStripMenuItem.Text = "test";
-            // 
-            // toolTip1
-            // 
-            this.toolTip1.IsBalloon = true;
-            this.toolTip1.ShowAlways = true;
-            this.toolTip1.StripAmpersands = true;
-            this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            // 
-            // delayInitTimer
-            // 
-            this.delayInitTimer.Interval = 1000;
-            this.delayInitTimer.Tick += new System.EventHandler(this.delayInitTimer_Tick);
-            // 
-            // Mainform
-            // 
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(296, 54);
-            this.ContextMenuStrip = this.setunaIconMenu;
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button1);
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximizeBox = false;
-            this.MinimumSize = new System.Drawing.Size(100, 60);
-            this.Name = "Mainform";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "SETUNA";
-            this.TopMost = true;
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Mainform_FormClosing);
-            this.Load += new System.EventHandler(this.Mainform_Load);
-            this.Shown += new System.EventHandler(this.Mainform_Shown);
-            this.subMenu.ResumeLayout(false);
-            this.ResumeLayout(false);
+            _button1.Font = new System.Drawing.Font("微软雅黑", 14F);
+            _button1.ForeColor = System.Drawing.Color.Gray;
+            _button1.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            _button1.Location = new System.Drawing.Point(0, 0);
+            _button1.Name = "button1";
+            _button1.Size = new System.Drawing.Size(253, 54);
+            _button1.TabIndex = 0;
+            _button1.Text = "截取";
+            _button1.UseVisualStyleBackColor = true;
+            _button1.Click += OnButton1Click;
 
-		}
+            _button4.Dock = System.Windows.Forms.DockStyle.Right;
+            _button4.Font = new System.Drawing.Font("微软雅黑", 9F);
+            _button4.ForeColor = System.Drawing.Color.Gray;
+            _button4.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            _button4.Location = new System.Drawing.Point(252, 0);
+            _button4.Name = "button4";
+            _button4.Size = new System.Drawing.Size(44, 54);
+            _button4.TabIndex = 4;
+            _button4.Text = "选项";
+            _button4.UseVisualStyleBackColor = true;
+            _button4.Click += OnButton4Click;
 
-		// Token: 0x040000D8 RID: 216
-		private global::System.ComponentModel.IContainer components;
+            _imgPoolTimer.Tick += OnImgPoolTimerTick;
+            _windowTimer.Enabled = true;
+            _windowTimer.Interval = 500;
+            _windowTimer.Tick += OnWindowTimerTick;
 
-		// Token: 0x040000D9 RID: 217
-		private global::System.Windows.Forms.Button button1;
+            _setunaIcon.ContextMenuStrip = _setunaIconMenu;
+            _setunaIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("setunaIcon.Icon")));
+            _setunaIcon.Text = "SETUNA2";
+            _setunaIcon.DoubleClick += OnSetunaIconMouseDoubleClick;
+            _setunaIcon.MouseClick += OnSetunaIconMouseClick;
 
-		// Token: 0x040000DA RID: 218
-		private global::System.Windows.Forms.Button button4;
+            _setunaIconMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
+            _setunaIconMenu.Name = "setunaIconMenu";
+            _setunaIconMenu.Scrap = null;
+            _setunaIconMenu.Size = new System.Drawing.Size(61, 4);
+            _setunaIconMenu.Opening += OnSetunaIconMenuOpening;
 
-		// Token: 0x040000DB RID: 219
-		private global::System.Windows.Forms.NotifyIcon setunaIcon;
+            _subMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
+            _subMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            _testToolStripMenuItem});
+            _subMenu.Name = "subMenu";
+            _subMenu.Scrap = null;
+            _subMenu.Size = new System.Drawing.Size(148, 50);
 
-		// Token: 0x040000DC RID: 220
-		private global::SETUNA.Main.ContextStyleMenuStrip setunaIconMenu;
+            _testToolStripMenuItem.Name = "testToolStripMenuItem";
+            _testToolStripMenuItem.Size = new System.Drawing.Size(147, 46);
+            _testToolStripMenuItem.Text = "test";
 
-		// Token: 0x040000DD RID: 221
-		private global::SETUNA.Main.ContextStyleMenuStrip subMenu;
+            _toolTip1.IsBalloon = true;
+            _toolTip1.ShowAlways = true;
+            _toolTip1.StripAmpersands = true;
+            _toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
 
-		// Token: 0x040000DE RID: 222
-		private global::System.Windows.Forms.ToolStripMenuItem testToolStripMenuItem;
+            _delayInitTimer.Interval = 1000;
+            _delayInitTimer.Tick += OnDelayInitTimerTick;
 
-		// Token: 0x040000DF RID: 223
-		private global::System.Windows.Forms.Timer timPool;
-
-		// Token: 0x040000E0 RID: 224
-		private global::System.Windows.Forms.ToolTip toolTip1;
-
-        private global::System.Windows.Forms.Timer windowTimer;
-        private System.Windows.Forms.Timer delayInitTimer;
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            ClientSize = new System.Drawing.Size(296, 54);
+            ContextMenuStrip = _setunaIconMenu;
+            Controls.Add(_button4);
+            Controls.Add(_button1);
+            Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            MaximizeBox = false;
+            MinimumSize = new System.Drawing.Size(100, 60);
+            Name = "Mainform";
+            StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            Text = "SETUNA";
+            TopMost = true;
+            FormClosing += OnMainformClosing;
+            Load += OnMainformLoad;
+            Shown += OnMainformShow;
+            _subMenu.ResumeLayout(false);
+            ResumeLayout(false);
+        }
     }
 }

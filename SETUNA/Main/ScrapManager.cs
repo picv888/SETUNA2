@@ -168,10 +168,8 @@ namespace SETUNA.Main
         // Token: 0x060001C3 RID: 451 RVA: 0x00009CCD File Offset: 0x00007ECD
         public void AddScrapThenDo(ScrapBase newScrap, bool show = true)
         {
-            newScrap.addScrapStyleEvent(_mainform);
-            newScrap.addScrapMenuEvent(_mainform);
-
-            newScrap.addScrapLocationChangedEvent(Cache.CacheManager.Instance);
+            newScrap.AddScrapMenuListener(_mainform);
+            newScrap.AddScrapLocationChangedListener(Cache.CacheManager.Instance);
             newScrap.AddScrapImageChangedListener(Cache.CacheManager.Instance);
             newScrap.AddScrapStyleAppliedListener(Cache.CacheManager.Instance);
             newScrap.AddScrapStyleRemovedListener(Cache.CacheManager.Instance);
@@ -191,16 +189,6 @@ namespace SETUNA.Main
             }
         }
 
-        // Token: 0x060001C4 RID: 452 RVA: 0x00009D04 File Offset: 0x00007F04
-        public ScrapBase GetDummyScrap()
-        {
-            return new ScrapBase
-            {
-                Manager = this
-            };
-        }
-
-        // Token: 0x060001C5 RID: 453 RVA: 0x00009D20 File Offset: 0x00007F20
         public void ScrapClose(object sender, ScrapEventArgs e)
         {
             var scrapBase = e.scrap;
