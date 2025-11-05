@@ -1,12 +1,14 @@
-﻿namespace SETUNA
+﻿using System.Windows.Forms;
+
+namespace SETUNA
 {
     sealed partial class Mainform
     {
         private global::System.ComponentModel.IContainer _components;
         private global::System.Windows.Forms.Button _button1;
         private global::System.Windows.Forms.Button _button4;
-        private global::System.Windows.Forms.NotifyIcon _setunaIcon;
-        private global::SETUNA.Main.ContextStyleMenuStrip _setunaIconMenu;
+        private global::System.Windows.Forms.NotifyIcon _trayIcon;
+        private global::SETUNA.Main.ContextStyleMenuStrip _trayIconMenu;
         private global::SETUNA.Main.ContextStyleMenuStrip _subMenu;
         private global::System.Windows.Forms.ToolStripMenuItem _testToolStripMenuItem;
         private global::System.Windows.Forms.Timer _imgPoolTimer;
@@ -31,8 +33,8 @@
             _button4 = new System.Windows.Forms.Button();
             _imgPoolTimer = new System.Windows.Forms.Timer(_components);
             _windowTimer = new System.Windows.Forms.Timer(_components);
-            _setunaIcon = new System.Windows.Forms.NotifyIcon(_components);
-            _setunaIconMenu = new SETUNA.Main.ContextStyleMenuStrip(_components);
+            _trayIcon = new System.Windows.Forms.NotifyIcon(_components);
+            _trayIconMenu = new SETUNA.Main.ContextStyleMenuStrip(_components);
             _subMenu = new SETUNA.Main.ContextStyleMenuStrip(_components);
             _testToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             _toolTip1 = new System.Windows.Forms.ToolTip(_components);
@@ -71,17 +73,16 @@
             _windowTimer.Interval = 500;
             _windowTimer.Tick += OnWindowTimerTick;
 
-            _setunaIcon.ContextMenuStrip = _setunaIconMenu;
-            _setunaIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("setunaIcon.Icon")));
-            _setunaIcon.Text = "SETUNA2";
-            _setunaIcon.DoubleClick += OnSetunaIconMouseDoubleClick;
-            _setunaIcon.MouseClick += OnSetunaIconMouseClick;
+            _trayIcon.ContextMenuStrip = _trayIconMenu;
+            _trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("setunaIcon.Icon")));
+            _trayIcon.Text = "SETUNA2";
+            _trayIcon.DoubleClick += OnTrayIconMouseDoubleClick;
 
-            _setunaIconMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
-            _setunaIconMenu.Name = "setunaIconMenu";
-            _setunaIconMenu.Scrap = null;
-            _setunaIconMenu.Size = new System.Drawing.Size(61, 4);
-            _setunaIconMenu.Opening += OnSetunaIconMenuOpening;
+            _trayIconMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
+            _trayIconMenu.Name = "setunaIconMenu";
+            _trayIconMenu.Scrap = null;
+            _trayIconMenu.Size = new System.Drawing.Size(61, 4);
+            _trayIconMenu.Closing += OnTrayIconMenuClosing;
 
             _subMenu.ImageScalingSize = new System.Drawing.Size(20, 20);
             _subMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -104,7 +105,7 @@
 
             AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             ClientSize = new System.Drawing.Size(296, 54);
-            ContextMenuStrip = _setunaIconMenu;
+            ContextMenuStrip = _trayIconMenu;
             Controls.Add(_button4);
             Controls.Add(_button1);
             Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -118,6 +119,16 @@
             Load += OnMainformLoad;
             _subMenu.ResumeLayout(false);
             ResumeLayout(false);
+        }
+
+        private void OnTrayIconMenuClosing(object sender, ToolStripDropDownClosingEventArgs e)
+        {
+            // 如果关闭是由键盘触发，并且当前按下了 Alt，就取消关闭
+            if (e.CloseReason == ToolStripDropDownCloseReason.Keyboard &&
+                (Control.ModifierKeys & Keys.Alt) == Keys.Alt)
+            {
+                e.Cancel = true;
+            }
         }
     }
 }

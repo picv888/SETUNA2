@@ -17,11 +17,10 @@ namespace SETUNA.Main.Cache
         public void Init()
         {
             IsInit = false;
-            var scrapBook = Mainform.Instance.scrapBook;
-            scrapBook.AddScrapAddedListener(this);
-            scrapBook.AddScrapRemovedListener(this);
-
-            RestoreScraps(scrapBook);
+            var scrapManager = Mainform.Instance.scrapManager;
+            scrapManager.AddScrapAddedListener(this);
+            scrapManager.AddScrapRemovedListener(this);
+            RestoreScraps(scrapManager);
         }
 
         public void DeInit()

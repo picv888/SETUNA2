@@ -85,7 +85,7 @@ namespace SETUNA.Main.Layer
 
             foreach (var item in sortingFormDatas)
             {
-                if (!item.Visible)
+                if (!item.Visible || !(item.Form is ScrapBase))
                 {
                     continue;
                 }

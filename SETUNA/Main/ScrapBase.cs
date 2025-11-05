@@ -54,7 +54,6 @@ namespace SETUNA.Main
         public delegate void ScrapSubMenuHandler(object sender, ScrapMenuArgs e);
         
         public event ScrapBase.ScrapEventHandler ScrapClose;
-        public event ScrapBase.ScrapEventHandler ScrapActive;
         public event ScrapBase.ScrapEventHandler ScrapInactiveMouseEnter;
         public event ScrapBase.ScrapEventHandler ScrapInactiveMouseLeave;
         public event ScrapBase.ScrapSubMenuHandler ScrapRightMouseClick;
@@ -156,12 +155,7 @@ namespace SETUNA.Main
 
         ~ScrapBase()
         {
-            ImageAllDispose();
-        }
-
-        private void ImageAllDispose()
-        {
-            ImageDispose(ref _imgView);
+            Image.Dispose();
         }
 
         public double TargetOpacity
@@ -221,8 +215,8 @@ namespace SETUNA.Main
             get => _imgView;
             set
             {
-                ImageAllDispose();
-                _imgView = (Image)value.Clone();
+                _imgView?.Dispose();
+                _imgView = (Image)value?.Clone();
                 if (_imgView == null)
                 {
                     Console.WriteLine("ScrapBase Image : unll");
@@ -239,52 +233,6 @@ namespace SETUNA.Main
         [DllImport("user32.dll")]
         private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
 
-        private void ImageDispose(ref Image img)
-        {
-            if (img != null)
-            {
-                img.Dispose();
-                img = null;
-            }
-        }
-
-        public Image GetViewImage()
-        {
-            var bitmap = new Bitmap(base.Width, base.Height, PixelFormat.Format24bppRgb);
-            base.DrawToBitmap(bitmap, new Rectangle(0, 0, base.Width, base.Height));
-            return bitmap;
-        }
-
-        public Image GetThumbnail()
-        {
-            var bitmap = new Bitmap(230, 150, PixelFormat.Format24bppRgb);
-            var graphics = Graphics.FromImage(bitmap);
-            graphics.FillRectangle(Brushes.DarkGray, 0, 0, bitmap.Width, bitmap.Height);
-            if (_imgView.Width <= bitmap.Width - 1 || _imgView.Height <= bitmap.Height - 1)
-            {
-                graphics.DrawImageUnscaled(_imgView, 1, 1);
-            }
-            else
-            {
-                var size = new Size(_imgView.Width - 1, _imgView.Height - 1);
-                double num;
-                if (size.Width - bitmap.Width - 1 <= size.Height - bitmap.Height - 1)
-                {
-                    num = (bitmap.Width - 1) / (double)(size.Width - 1);
-                }
-                else
-                {
-                    num = (bitmap.Height - 1) / (double)(size.Height - 1);
-                }
-                size.Width = (int)(size.Width * num);
-                size.Height = (int)(size.Height * num);
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.DrawImage(_imgView, 1, 1, size.Width, size.Height);
-            }
-            graphics.DrawRectangle(Pens.Black, 0, 0, bitmap.Width - 1, bitmap.Height - 1);
-            return bitmap;
-        }
-
         protected override void OnPaint(PaintEventArgs e)
         {
             var margin = Padding.All;
@@ -299,7 +247,7 @@ namespace SETUNA.Main
             {
                 e.Graphics.Clear(Color.White);
             }
-            e.Graphics.DrawImage(_imgView, margin, margin, (int)(_imgView.Width * (Scale / 100.0)), (int)(_imgView.Height * (Scale / 100.0)));
+            e.Graphics.DrawImage(Image, margin, margin, (int)(Image.Width * (Scale / 100.0)), (int)(Image.Height * (Scale / 100.0)));
             e.Graphics.DrawRectangle(_pen, new Rectangle(0, 0, Width - 1, Height - 1));
         }
 
@@ -318,8 +266,8 @@ namespace SETUNA.Main
 
                 var x = Left - value.All;
                 var y = Top - value.All;
-                var num = (int)(_imgView.Width * (_scale / 100f)) + value.All * 2;
-                var num2 = (int)(_imgView.Height * (_scale / 100f)) + value.All * 2;
+                var num = (int)(Image.Width * (_scale / 100f)) + value.All * 2;
+                var num2 = (int)(Image.Height * (_scale / 100f)) + value.All * 2;
                 SetBoundsCore(x, y, num, num2, BoundsSpecified.Location);
                 base.ClientSize = new Size(num, num2);
             }
@@ -356,18 +304,13 @@ namespace SETUNA.Main
 
         protected override void OnClosed(EventArgs e)
         {
-            ImageAllDispose();
             _applyFinished = null;
-
             base.OnClosed(e);
         }
 
         public void OnScrapClose(ScrapEventArgs e)
         {
-            if (ScrapClose != null)
-            {
-                ScrapClose(this, e);
-            }
+            ScrapClose?.Invoke(this, e);
         }
 
         public void PrepareClose()
@@ -421,8 +364,8 @@ namespace SETUNA.Main
                 {
                     _scale = 200;
                 }
-                base.Width = (int)(_imgView.Width * (_scale / 100f)) + Padding.All * 2;
-                base.Height = (int)(_imgView.Height * (_scale / 100f)) + Padding.All * 2;
+                Width = (int)(Image.Width * (_scale / 100f)) + Padding.All * 2;
+                Height = (int)(Image.Height * (_scale / 100f)) + Padding.All * 2;
                 Refresh();
             }
         }

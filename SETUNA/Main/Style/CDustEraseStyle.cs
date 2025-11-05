@@ -13,7 +13,7 @@
         // Token: 0x060002BF RID: 703 RVA: 0x0000F53B File Offset: 0x0000D73B
         public override void Apply(ScrapBase scrap)
         {
-            scrap.Manager.EraseDustBox();
+            Mainform.Instance.scrapManager.EraseDustBox();
         }
     }
 }

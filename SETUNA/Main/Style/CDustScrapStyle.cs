@@ -21,7 +21,7 @@ namespace SETUNA.Main.Style
 
             if (result == DialogResult.Yes)
             {
-                scrap.Manager.CloseAllScrap();
+                Mainform.Instance.scrapManager.CloseAllScrap();
             }
         }
     }

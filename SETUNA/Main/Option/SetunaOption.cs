@@ -529,7 +529,7 @@ namespace SETUNA.Main.Option
             };
             cstyle.AddStyle(new CCompactStyleItem
             {
-                Opacity = 80,
+                Opacity = 100,
                 SoldLine = false,
                 LineColor = Color.Blue.ToArgb()
             });

@@ -3,17 +3,6 @@
 	// Token: 0x0200007B RID: 123
 	partial class CompactScrap
 	{
-		// Token: 0x06000414 RID: 1044 RVA: 0x0001A173 File Offset: 0x00018373
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && this.components != null)
-			{
-				this.components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
-
-		// Token: 0x06000415 RID: 1045 RVA: 0x0001A194 File Offset: 0x00018394
 		private void InitializeComponent()
 		{
             this.SuspendLayout();
@@ -45,10 +34,5 @@
             this.ResumeLayout(false);
 
 		}
-
-		// Token: 0x0400026F RID: 623
-#pragma warning disable CS0649 // 从未对字段“CompactScrap.components”赋值，字段将一直保持其默认值 null
-		private global::System.ComponentModel.IContainer components;
-#pragma warning restore CS0649 // 从未对字段“CompactScrap.components”赋值，字段将一直保持其默认值 null
 	}
 }

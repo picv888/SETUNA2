@@ -32,7 +32,7 @@ namespace SETUNA.Main.StyleItems
                 {
                     bitmap = new Bitmap(scrap.Width, scrap.Height, PixelFormat.Format24bppRgb);
                     graphics = Graphics.FromImage(bitmap);
-                    graphics.DrawImage(scrap.GetViewImage(), 0, 0, scrap.Width, scrap.Height);
+                    graphics.DrawImage(scrap.Image, 0, 0, scrap.Width, scrap.Height);
                 }
                 else
                 {

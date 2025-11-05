@@ -71,8 +71,12 @@ namespace SETUNA.Main.StyleItems
         // Token: 0x040001F4 RID: 500
         public static int OpacityMaxValue = 100;
 
+        private byte _opacity;
         // Token: 0x040001F5 RID: 501
-        public byte Opacity;
+        public byte Opacity {
+            get => _opacity; 
+            set => _opacity = value;
+        }
 
         // Token: 0x040001F6 RID: 502
         public int LineColor;

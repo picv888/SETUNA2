@@ -26,7 +26,7 @@ namespace SETUNA.Main.StyleItems
                 ImageJpegPreviewPanel imageJpegPreviewPanel;
                 if (HaveMargin)
                 {
-                    imageJpegPreviewPanel = new ImageJpegPreviewPanel(this, scrap.GetViewImage(), base.GetImageCodecInfo());
+                    imageJpegPreviewPanel = new ImageJpegPreviewPanel(this, scrap.Image, base.GetImageCodecInfo());
                 }
                 else
                 {

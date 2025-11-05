@@ -101,7 +101,6 @@ namespace SETUNA.Main.Style
             }
         }
 
-        // Token: 0x0600022C RID: 556 RVA: 0x0000BA2C File Offset: 0x00009C2C
         public virtual void Apply(ref ScrapBase scrap, Point clickpoint)
         {
             try
@@ -114,13 +113,11 @@ namespace SETUNA.Main.Style
             }
         }
 
-        // Token: 0x0600022D RID: 557 RVA: 0x0000BA74 File Offset: 0x00009C74
         public string GetName()
         {
             return _stylename;
         }
 
-        // Token: 0x0600022E RID: 558 RVA: 0x0000BA7C File Offset: 0x00009C7C
         public string GetDisplayName()
         {
             return _stylename;

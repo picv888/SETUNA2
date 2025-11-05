@@ -1,4 +1,7 @@
-﻿namespace SETUNA.Main
+﻿using System;
+using System.Windows.Forms;
+
+namespace SETUNA.Main
 {
     // Token: 0x02000042 RID: 66
     public partial class ContextStyleMenuStrip : global::System.Windows.Forms.ContextMenuStrip

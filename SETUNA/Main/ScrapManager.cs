@@ -30,8 +30,6 @@ namespace SETUNA.Main
             }
         }
 
-        public Mainform BindForm => _mainform;
-
         public event ScrapManager.KeyPressHandler keyPressed;
         public event ScrapManager.ScrapAddedHandler ScrapAdded;
         public event ScrapManager.ScrapRemovedHandler scrapRemoved;

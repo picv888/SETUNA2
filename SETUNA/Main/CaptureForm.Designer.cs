@@ -3,17 +3,6 @@
 	// Token: 0x02000046 RID: 70
 	sealed partial class CaptureForm
 	{
-		// Token: 0x060002B7 RID: 695 RVA: 0x0000F33E File Offset: 0x0000D53E
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing && this.components != null)
-			{
-				this.components.Dispose();
-			}
-			base.Dispose(disposing);
-		}
-
-		// Token: 0x060002B8 RID: 696 RVA: 0x0000F360 File Offset: 0x0000D560
 		private void InitializeComponent()
 		{
             this.SuspendLayout();
@@ -43,10 +32,6 @@
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.CaptureForm_MouseMove);
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.CaptureForm_MouseUp);
             this.ResumeLayout(false);
-
 		}
-
-        // Token: 0x0400013E RID: 318
-        private global::System.ComponentModel.IContainer components;
     }
 }

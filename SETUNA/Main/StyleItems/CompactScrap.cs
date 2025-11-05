@@ -13,7 +13,7 @@ namespace SETUNA.Main.StyleItems
         {
             InitializeComponent();
             this.scrap = scrap;
-            _thumbnail = scrap.GetViewImage();
+            _thumbnail = (Image)scrap.Image.Clone();
             _dragmode = false;
             if (clickpoint == Point.Empty)
             {
@@ -67,7 +67,6 @@ namespace SETUNA.Main.StyleItems
         // Token: 0x0600040A RID: 1034 RVA: 0x00019FFE File Offset: 0x000181FE
         private void OnCompactScrapDoubleClick(object sender, EventArgs e)
         {
-            _thumbnail.Dispose();
             Close();
         }
 

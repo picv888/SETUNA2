@@ -27,7 +27,7 @@ namespace SETUNA.Main.StyleItems
                 }
                 else
                 {
-                    image = scrap.GetViewImage();
+                    image = scrap.Image;
                 }
                 Clipboard.Clear();
                 for (var i = 0; i < 5; i++)

@@ -158,7 +158,7 @@ namespace SETUNA.Main.Option
 
             _so.Setuna.BackgroundTransparentEnabled = checkBox_transparent.Checked;
 
-            foreach (var item in Mainform.Instance.scrapBook)
+            foreach (var item in Mainform.Instance.scrapManager)
             {
                 item.Refresh();
             }
