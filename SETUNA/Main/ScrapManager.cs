@@ -120,7 +120,7 @@ namespace SETUNA.Main
             {
                 scrapBase.ApplyStylesFromCache(cstyle, style.ClickPoint, () =>
                 {
-                    AddScrapThenDo(scrapBase, scrapBase.Visible);
+                    AddScrapThenDo(scrapBase);
                     addFinished?.Invoke();
                 });
             }
