@@ -538,7 +538,6 @@ namespace SETUNA
             _delayInitTimer.Start();
         }
 
-        // Token: 0x06000212 RID: 530 RVA: 0x0000B3B6 File Offset: 0x000095B6
         private void OnSetunaIconMouseClick(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -553,8 +552,7 @@ namespace SETUNA
             Option();
         }
 
-        // Token: 0x06000213 RID: 531 RVA: 0x0000B3BE File Offset: 0x000095BE
-        public void ScrapMenuOpening(object sender, ScrapMenuArgs e)
+        public void OnScrapRightMouseClick(object sender, ScrapMenuArgs e)
         {
             _subMenu.Scrap = e.scrap;
             _subMenu.Show(e.scrap, e.scrap.PointToClient(Cursor.Position));
@@ -773,10 +771,6 @@ namespace SETUNA
                     AddImageList(new ScrapSourceImage(bitmap, point));
                 }
             }
-        }
-
-        private void OnMainformShow(object sender, EventArgs e)
-        {
         }
 
         private void OnSetunaIconMenuOpening(object sender, CancelEventArgs e)

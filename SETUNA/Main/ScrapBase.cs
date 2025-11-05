@@ -54,12 +54,10 @@ namespace SETUNA.Main
         public delegate void ScrapSubMenuHandler(object sender, ScrapMenuArgs e);
         
         public event ScrapBase.ScrapEventHandler ScrapClose;
-        public event ScrapBase.ScrapEventHandler ScrapCreate;
         public event ScrapBase.ScrapEventHandler ScrapActive;
-        public event ScrapBase.ScrapEventHandler ScrapInactive;
         public event ScrapBase.ScrapEventHandler ScrapInactiveMouseEnter;
         public event ScrapBase.ScrapEventHandler ScrapInactiveMouseLeave;
-        public event ScrapBase.ScrapSubMenuHandler ScrapSubMenuOpening;
+        public event ScrapBase.ScrapSubMenuHandler ScrapRightMouseClick;
         public event ScrapBase.ScrapEventHandler ScrapLocationChanged;
         public event ScrapBase.ScrapEventHandler ScrapImageChanged;
         public event ScrapBase.ScrapEventHandler ScrapStyleApplied;
@@ -489,39 +487,6 @@ namespace SETUNA.Main
             }
         }
 
-        public void AddScrapListener(IScrapStyleListener listener)
-        {
-            ScrapCreate = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapCreate, new ScrapBase.ScrapEventHandler(listener.ScrapCreated));
-            ScrapActive = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapActive, new ScrapBase.ScrapEventHandler(listener.ScrapActivated));
-            ScrapInactive = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapInactive, new ScrapBase.ScrapEventHandler(listener.ScrapInactived));
-            ScrapInactiveMouseEnter = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapInactiveMouseEnter, new ScrapBase.ScrapEventHandler(listener.ScrapInactiveMouseEnter));
-            ScrapInactiveMouseLeave = (ScrapBase.ScrapEventHandler)Delegate.Combine(ScrapInactiveMouseLeave, new ScrapBase.ScrapEventHandler(listener.ScrapInactiveMouseOut));
-        }
-
-        public void OnScrapCreated()
-        {
-            if (ScrapCreate != null)
-            {
-                ScrapCreate(this, new ScrapEventArgs(this));
-            }
-        }
-
-        private void OnScrapActivated(object sender, EventArgs e)
-        {
-            if (ScrapActive != null)
-            {
-                ScrapActive(sender, new ScrapEventArgs(this));
-            }
-        }
-
-        private void OnScrapDeactivate(object sender, EventArgs e)
-        {
-            if (ScrapInactive != null)
-            {
-                ScrapInactive(sender, new ScrapEventArgs(this));
-            }
-        }
-
         private void OnScrapMouseEnter(object sender, EventArgs e)
         {
             _isMouseEnter = true;
@@ -544,36 +509,11 @@ namespace SETUNA.Main
             TargetOpacity = _optSetuna.Scrap.mouseLeaveAlphaChange ? opacity : 1.0;
         }
 
-        public void AddScrapMenuListener(IScrapMenuListener listener)
-        {
-            ScrapSubMenuOpening += listener.ScrapMenuOpening;
-        }
-
-        public void AddScrapLocationChangedListener(IScrapLocationChangedListener listener)
-        {
-            ScrapLocationChanged += listener.ScrapLocationChanged;
-        }
-
-        public void AddScrapImageChangedListener(IScrapImageChangedListener listener)
-        {
-            ScrapImageChanged += listener.OnScrapImageChanged;
-        }
-
-        public void AddScrapStyleAppliedListener(IScrapStyleAppliedListener listener)
-        {
-            ScrapStyleApplied += listener.OnScrapStyleApplied;
-        }
-
-        public void AddScrapStyleRemovedListener(IScrapStyleRemovedListener listener)
-        {
-            ScrapStyleRemoved += listener.OnScrapStyleRemoved;
-        }
-
         private void OnScrapMouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right && ScrapSubMenuOpening != null)
+            if (e.Button == MouseButtons.Right)
             {
-                ScrapSubMenuOpening(sender, new ScrapMenuArgs(this, null));
+                ScrapRightMouseClick?.Invoke(sender, new ScrapMenuArgs(this, null));
             }
         }
 
@@ -745,21 +685,6 @@ namespace SETUNA.Main
             {
                 ScrapLocationChanged(e, new ScrapEventArgs(this));
             }
-        }
-
-        private void OnScrapSizeChanged(object sender, EventArgs e)
-        {
-        }
-
-        private void OnScrapVisibleChanged(object sender, EventArgs e)
-        {
-            _visible = Visible;
-        }
-
-
-        public bool GetVisibleFlag()
-        {
-            return _visible;
         }
     }
 }

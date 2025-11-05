@@ -91,7 +91,7 @@ namespace SETUNA.Main.Cache
             scrap.CacheItem = cacheItem;
         }
 
-        void IScrapRemovedListener.ScrapRemoved(object sender, ScrapEventArgs e)
+        public void ScrapRemoved(object sender, ScrapEventArgs e)
         {
             var scrap = e.scrap;
             var cacheItem = scrap?.CacheItem;
@@ -104,7 +104,7 @@ namespace SETUNA.Main.Cache
             cacheItem.Delete();
         }
 
-        void IScrapLocationChangedListener.ScrapLocationChanged(object sender, ScrapEventArgs e)
+        public void ScrapLocationChanged(object sender, ScrapEventArgs e)
         {
             var scrap = e.scrap;
             var cacheItem = scrap?.CacheItem;
@@ -117,7 +117,7 @@ namespace SETUNA.Main.Cache
             cacheItem.SaveInfo();
         }
 
-        void IScrapImageChangedListener.OnScrapImageChanged(object sender, ScrapEventArgs e)
+        public void OnScrapImageChanged(object sender, ScrapEventArgs e)
         {
             var scrap = e.scrap;
             var cacheItem = scrap?.CacheItem;
@@ -130,7 +130,7 @@ namespace SETUNA.Main.Cache
             cacheItem.SaveImage(image);
         }
 
-        void IScrapStyleAppliedListener.OnScrapStyleApplied(object sender, ScrapEventArgs e)
+        public void OnScrapStyleApplied(object sender, ScrapEventArgs e)
         {
             var scrap = e.scrap;
             var styleID = scrap?.StyleID ?? 0;
@@ -144,7 +144,7 @@ namespace SETUNA.Main.Cache
             cacheItem.SaveInfo();
         }
 
-        void IScrapStyleRemovedListener.OnScrapStyleRemoved(object sender, ScrapEventArgs e)
+        public void OnScrapStyleRemoved(object sender, ScrapEventArgs e)
         {
             var scrap = e.scrap;
             var cacheItem = scrap?.CacheItem;

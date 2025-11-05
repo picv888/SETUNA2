@@ -4,6 +4,6 @@
     public interface IScrapMenuListener
     {
         // Token: 0x060001D7 RID: 471
-        void ScrapMenuOpening(object sender, ScrapMenuArgs e);
+        void OnScrapRightMouseClick(object sender, ScrapMenuArgs e);
     }
 }

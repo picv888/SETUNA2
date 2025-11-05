@@ -116,7 +116,6 @@
             TopMost = true;
             FormClosing += OnMainformClosing;
             Load += OnMainformLoad;
-            Shown += OnMainformShow;
             _subMenu.ResumeLayout(false);
             ResumeLayout(false);
         }

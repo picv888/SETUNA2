@@ -30,10 +30,6 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.TopMost = true;
-            this.Activated += OnScrapActivated;
-            this.Deactivate += OnScrapDeactivate;
-            this.SizeChanged += OnScrapSizeChanged;
-            this.VisibleChanged += OnScrapVisibleChanged;
             this.DragDrop += OnScrapDragEnd;
             this.DragEnter += OnScrapDragBegin;
             this.KeyPress += OnScrapKeyPress;
