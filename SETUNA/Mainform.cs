@@ -565,10 +565,7 @@ namespace SETUNA
 
         private void SubMenu_MouseWheel(object sender, MouseEventArgs e)
         {
-            if (MouseWheelCallbackEvent != null)
-            {
-                MouseWheelCallbackEvent(sender, e);
-            }
+            MouseWheelCallbackEvent?.Invoke(sender, e);
         }
 
         // Token: 0x06000214 RID: 532 RVA: 0x0000B3F2 File Offset: 0x000095F2

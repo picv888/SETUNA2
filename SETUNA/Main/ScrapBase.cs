@@ -229,13 +229,9 @@ namespace SETUNA.Main
                 {
                     Console.WriteLine("ScrapBase Image : unll");
                 }
-                Scale = Scale;
                 Refresh();
 
-                if (ScrapImageChanged != null)
-                {
-                    ScrapImageChanged(this, new ScrapEventArgs(this));
-                }
+                ScrapImageChanged?.Invoke(this, new ScrapEventArgs(this));
             }
         }
 
@@ -300,13 +296,12 @@ namespace SETUNA.Main
             {
                 e.Graphics.Clear(Color.Green);
                 TransparencyKey = Color.Green;
-                e.Graphics.DrawImage(_imgView, margin, margin, _imgView.Width, _imgView.Height);
             }
             else
             {
                 e.Graphics.Clear(Color.White);
-                e.Graphics.DrawImage(_imgView, margin, margin, _imgView.Width, _imgView.Height);
             }
+            e.Graphics.DrawImage(_imgView, margin, margin, (int)(_imgView.Width * (Scale / 100.0)), (int)(_imgView.Height * (Scale / 100.0)));
             e.Graphics.DrawRectangle(_pen, new Rectangle(0, 0, Width - 1, Height - 1));
         }
 
