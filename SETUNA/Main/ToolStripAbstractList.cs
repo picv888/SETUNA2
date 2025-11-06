@@ -15,19 +15,19 @@ namespace SETUNA.Main
         public ToolStripAbstractList(string text, ScrapManager scrapbook) : base(text)
         {
             _scrapbook = scrapbook;
-            base.DropDownItems.Clear();
-            base.DropDownItems.Insert(0, new ToolStripMenuItem("无"));
-            
+            RefreshList();
             ToolStripEx.BigButtons(DropDown);
+        }
+
+        protected override void OnDropDownShow(EventArgs e)
+        {
+            RefreshList();
+            base.OnDropDownShow(e);
         }
 
         protected void RefreshList()
         {
-            if (_createdlist)
-            {
-                return;
-            }
-            base.DropDownItems.Clear();
+            DropDownItems.Clear();
             if (_scrapbook != null)
             {
                 foreach (var obj in GetItems())
@@ -47,19 +47,22 @@ namespace SETUNA.Main
                         ImageScaling = ToolStripItemImageScaling.None
                     };
                     OnAddItem(toolStripMenuItem);
-                    base.DropDownItems.Insert(0, toolStripMenuItem);
+                    DropDownItems.Insert(0, toolStripMenuItem);
                 }
             }
-            if (base.DropDownItems.Count == 0)
+            if (DropDownItems.Count == 0)
             {
-                base.DropDownItems.Insert(0, new ToolStripMenuItem("无"));
+                DropDownItems.Add(new ToolStripMenuItem("无"));
             }
-            _createdlist = true;
+            // 添加一个不可见的菜单项，用于解决.NET framework的一个BUG：当子菜单只有一个菜单项时，子菜单会显示在屏幕左上角
+            var temp = new ToolStripMenuItem(" ");
+            temp.Visible = false;
+            DropDownItems.Add(temp);
         }
 
         protected override void OnMouseHover(EventArgs e)
         {
-            RefreshList();
+            //RefreshList();
             base.OnMouseHover(e);
         }
 
